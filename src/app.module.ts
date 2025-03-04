@@ -5,7 +5,10 @@ import { MapsModule } from './maps/maps.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BioLinkEntity } from './bio-links/biolink.entity';
 import { MapEntity } from './maps/map.entity';
-
+import { LinksModule } from './links/links.module';
+import { SuperLinksModule } from './super-links/super-links.module';
+import { ImagesModule } from './images/images.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -16,13 +19,17 @@ import { MapEntity } from './maps/map.entity';
       username: 'postgres',
       password: 'arashk',
       database: 'dmpanel',
-      entities: [BioLinkEntity,MapEntity],
+      entities: [BioLinkEntity, MapEntity],
       synchronize: true,
     }),
+    ImagesModule,
+    SuperLinksModule,
+    LinksModule,
     DepartmentsModule,
     MapsModule,
     BioLinksModule,
-
+    ImagesModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],

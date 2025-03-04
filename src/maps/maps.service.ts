@@ -13,7 +13,6 @@ export class MapsService {
   ) {}
 
   async createMap(createMapDto: CreateMapDto): Promise<CreateMapDto> {
-    console.log(createMapDto)
     const map = this.mapRepository.create(createMapDto);
 
     // // Save the map entity

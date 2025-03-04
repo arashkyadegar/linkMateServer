@@ -1,5 +1,8 @@
 import { IsNumber, IsString, IsUrl, Length } from 'class-validator';
+import { CreateImageDto } from 'src/images/create-image.dto';
+import { CreateLinkDto } from 'src/links/create-link.dto';
 import { CreateMapDto } from 'src/maps/create-map.dto';
+import { CreateSuperLinkDto } from 'src/super-links/create-superlink.dto';
 
 export class CreateBioLinkDto {
   @IsString()
@@ -9,21 +12,27 @@ export class CreateBioLinkDto {
   maps: CreateMapDto | undefined;
 
   @IsNumber()
-  userId: string = "";
+  userId: string = '';
 
   @IsString()
-  @Length(3,50)
-  link: string = "";
+  @Length(3, 50)
+  link: string = '';
 
   @IsUrl()
-  video: string = "";
+  video: string = '';
 
-  @Length(3,50)
+  @Length(3, 50)
   @IsString()
-  title: string = "";
+  title: string = '';
 
-  @Length(10,400)
-  desc: string = "";
+  @Length(10, 400)
+  desc: string = '';
+
+  links: CreateLinkDto[];
+
+  superLinks: CreateSuperLinkDto[];
+
+  slider: CreateImageDto[];
 
   createdAt: Date | undefined;
   updatedAt: Date | undefined;

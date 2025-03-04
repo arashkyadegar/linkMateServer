@@ -7,6 +7,9 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { MapEntity } from '../maps/map.entity';
+import { LinkEntity } from '../links/link.entity';
+import { SuperLinkEntity } from '../super-links/superlink.entity';
+import { CreateImageDto } from '../images/create-image.dto';
 
 @Entity()
 export class BioLinkEntity {
@@ -30,6 +33,15 @@ export class BioLinkEntity {
 
   @Column()
   desc: string;
+
+  @Column('jsonb')
+  links: LinkEntity[];
+
+  @Column('jsonb')
+  superLinks: SuperLinkEntity[];
+
+  @Column('jsonb')
+  slider: CreateImageDto[];
 
   @OneToOne(() => MapEntity, { cascade: true })
   @JoinColumn()

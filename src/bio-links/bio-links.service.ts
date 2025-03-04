@@ -4,6 +4,8 @@ import { CreateBioLinkDto } from './create-biolink.dto';
 import { BioLinkEntity } from './biolink.entity';
 import { Repository } from 'typeorm';
 import { MapsService } from 'src/maps/maps.service';
+import { LinksService } from 'src/links/links.service';
+
 
 @Injectable()
 export class BioLinksService {
@@ -16,7 +18,8 @@ export class BioLinksService {
   async createBioLink(
     createBioLinkDto: CreateBioLinkDto,
   ): Promise<BioLinkEntity> {
-    const { name, userId, link, video, title, desc, maps } = createBioLinkDto;
+    const { name, userId, link, video, title, desc, maps, links, superLinks,slider } =
+      createBioLinkDto;
     let map;
 
     if (maps) {
@@ -31,6 +34,9 @@ export class BioLinksService {
       title,
       desc,
       map,
+      links,
+      superLinks,
+      slider
     });
 
     return this.bioLinkRepository.save(bioLink);
