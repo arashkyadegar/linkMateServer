@@ -9,6 +9,9 @@ import { LinksModule } from './links/links.module';
 import { SuperLinksModule } from './super-links/super-links.module';
 import { ImagesModule } from './images/images.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { UsersModule } from './users/users.module';
+import { UserEntity } from './users/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,7 +22,7 @@ import { UploadsModule } from './uploads/uploads.module';
       username: 'postgres',
       password: 'arashk',
       database: 'dmpanel',
-      entities: [BioLinkEntity, MapEntity],
+      entities: [BioLinkEntity, MapEntity, UserEntity],
       synchronize: true,
     }),
     ImagesModule,
@@ -30,6 +33,8 @@ import { UploadsModule } from './uploads/uploads.module';
     BioLinksModule,
     ImagesModule,
     UploadsModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
