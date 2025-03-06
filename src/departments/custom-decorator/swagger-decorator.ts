@@ -25,6 +25,7 @@ export function GetDepartmentById() {
     }),
   );
 }
+
 export function GetAllDepartments() {
   return applyDecorators(
     ApiOperation({ summary: 'Get all departments' }),

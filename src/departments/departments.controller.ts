@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
-  NotFoundException,
   Param,
   ParseIntPipe,
   Post,
@@ -14,13 +12,7 @@ import {
   CreateDepartmentDto,
   UpdateDepartmentDto,
 } from './create-department.dto';
-import {
-  ApiBadRequestResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
+
 import {
   GetAllDepartments,
   GetDepartmentById,
