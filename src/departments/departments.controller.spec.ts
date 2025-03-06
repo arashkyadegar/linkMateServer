@@ -1,18 +1,25 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { DepartmentsController } from './departments.controller';
+import { CreateDepartmentDto } from './create-department.dto';
 
 describe('DepartmentsController', () => {
   let controller: DepartmentsController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [DepartmentsController],
-    }).compile();
-
-    controller = module.get<DepartmentsController>(DepartmentsController);
+    controller = new DepartmentsController();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  describe('findAll', () => {
+    it('should return array of departments', async () => {
+      const result = [];
+      expect(controller.findAll()).toEqual(result);
+    });
+  });
+
+  describe('createOne', () => {
+    it('should return sent dto', async () => {
+      let dt = new CreateDepartmentDto();
+      dt.name = 'mngmnt department';
+      expect(controller.createOne(dt)).toHaveProperty('name');
+    });
   });
 });

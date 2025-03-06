@@ -15,7 +15,10 @@ export class MapsService {
   async createMap(createMapDto: CreateMapDto): Promise<CreateMapDto> {
     const map = this.mapRepository.create(createMapDto);
 
-    // // Save the map entity
     return await this.mapRepository.save(map);
+  }
+
+  async findAll(): Promise<CreateMapDto[]> {
+    return await this.mapRepository.find();
   }
 }

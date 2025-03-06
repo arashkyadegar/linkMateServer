@@ -4,9 +4,10 @@ import { UserEntity } from './user.entity';
 import { QueryFailedError, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { SigninDto } from 'src/auth/dto/signin.dto';
-import { LoginResponseDto } from 'src/auth/dto/login-response.dto';
-import { SignupDto } from 'src/auth/dto/signup.dto';
 import { EmailAlreadyExistsException } from './custom-exception/EmailAlreadyExistsException';
+import { SignupDto } from 'src/auth/dto/signup.dto';
+import { LoginResponseDto } from 'src/auth/dto/login-response.dto';
+
 @Injectable()
 export class UsersService {
   constructor(

@@ -14,16 +14,19 @@ import {
 } from './create-department.dto';
 
 import {
-  GetAllDepartments,
+  FindAllDepartments,
   GetDepartmentById,
 } from './custom-decorator/swagger-decorator';
 
 @Controller('departments')
 export class DepartmentsController {
-  @GetAllDepartments() // Custom swagger-decorator for get all departments
+  static findAll(): any {
+    throw new Error('Method not implemented.');
+  }
+  @FindAllDepartments() // Custom swagger-decorator for get all departments
   @Get()
-  find() {
-    return 'departments list';
+  findAll(): any[] {
+    return [];
   }
 
   @GetDepartmentById() // Custom swagger-decorator for department by id

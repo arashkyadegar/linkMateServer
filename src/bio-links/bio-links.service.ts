@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBioLinkDto } from './create-biolink.dto';
 import { BioLinkEntity } from './biolink.entity';
 import { Repository } from 'typeorm';
-import { MapsService } from 'src/maps/maps.service';
-import { LinksService } from 'src/links/links.service';
+import { MapsService } from '../maps/maps.service';
 
 
 @Injectable()

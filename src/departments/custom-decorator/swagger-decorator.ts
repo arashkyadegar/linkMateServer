@@ -26,7 +26,7 @@ export function GetDepartmentById() {
   );
 }
 
-export function GetAllDepartments() {
+export function FindAllDepartments() {
   return applyDecorators(
     ApiOperation({ summary: 'Get all departments' }),
     ApiResponse({ description: 'Departments list fetched successfully' }),
