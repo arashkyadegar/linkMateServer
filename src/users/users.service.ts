@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
-import { QueryFailedError, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { SigninDto } from 'src/auth/dto/signin.dto';
 import { EmailAlreadyExistsException } from './custom-exception/EmailAlreadyExistsException';
-import { SignupDto } from 'src/auth/dto/signup.dto';
-import { LoginResponseDto } from 'src/auth/dto/login-response.dto';
+import { CreateUserDto } from './create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +13,7 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserDto: SignupDto): Promise<UserEntity> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { email, password } = createUserDto;
 
     let user = new UserEntity();
@@ -58,12 +56,12 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  async signIn(signinDto: SigninDto): Promise<LoginResponseDto | null> {
+  async signIn(signinDto: CreateUserDto): Promise<UserEntity | null> {
     const { email, password } = signinDto;
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user && (await user.validatePassword(password))) {
-      const userResponse = new LoginResponseDto();
+      const userResponse = new UserEntity();
 
       userResponse.email = user.email;
 

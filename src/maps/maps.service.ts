@@ -19,6 +19,7 @@ export class MapsService {
   }
 
   async findAll(): Promise<CreateMapDto[]> {
-    return await this.mapRepository.find();
+    return [];
+    //return await this.mapRepository.find();
   }
 }

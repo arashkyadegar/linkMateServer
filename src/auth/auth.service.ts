@@ -12,6 +12,7 @@ import { SigninDto } from './dto/signin.dto';
 import { UserJwtResponse } from './user-jwt.interface';
 
 import { EmailAlreadyExistsException } from 'src/users/custom-exception/EmailAlreadyExistsException';
+import { CreateUserDto } from 'src/users/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,8 @@ export class AuthService {
 
   async signUp(signupDto: SignupDto): Promise<UserEntity | null> {
     try {
-      return this.userService.create(signupDto);
+
+      return this.userService.create(signupDto as CreateUserDto);
     } catch (error) {
       if (error instanceof EmailAlreadyExistsException) {
         throw error;
@@ -40,7 +42,7 @@ export class AuthService {
   }
 
   async signin(signinDto: SigninDto): Promise<UserJwtResponse> {
-    const userResult = await this.userService.signIn(signinDto);
+    const userResult = await this.userService.signIn(signinDto as CreateUserDto);
 
     if (!userResult) {
       throw new UnauthorizedException('Invalid Credentials!');
