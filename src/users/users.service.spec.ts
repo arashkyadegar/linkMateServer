@@ -64,4 +64,42 @@ describe('UsersServiceTests', () => {
       expect(result).toHaveProperty('salt');
     });
   });
+
+  describe('signin', () => {
+    it('should fails if username is not found', async () => {
+      const enteredUser = new UserEntity();
+      enteredUser.email = 'user@gmail.com';
+      enteredUser.password = '123123';
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+
+      const result = await service.signIn(enteredUser);
+
+      expect(result).toBeFalsy();
+    });
+
+    it('should fails if password not corrected', async () => {
+      const enteredUser = new UserEntity();
+      enteredUser.email = 'user@gmail.com';
+      enteredUser.password = '123123';
+      jest.spyOn(enteredUser, 'validatePassword').mockResolvedValue(false);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(enteredUser);
+
+      const result = await service.signIn(enteredUser);
+
+      expect(result).toBeFalsy(); //.toBeNull
+    });
+
+    it('should successed if password is correct', async () => {
+      const enteredUser = new UserEntity();
+      enteredUser.email = 'user@gmail.com';
+      enteredUser.password = '123123';
+      jest.spyOn(enteredUser, 'validatePassword').mockResolvedValue(true);
+      jest.spyOn(repository, 'findOne').mockResolvedValue(enteredUser);
+
+      const result = await service.signIn(enteredUser);
+
+      expect(result).toBeTruthy();
+    });
+  });
 });
