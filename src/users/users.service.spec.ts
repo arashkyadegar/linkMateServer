@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { SignupDto } from 'src/auth/dto/signup.dto';
 import { EmailAlreadyExistsException } from './custom-exception/EmailAlreadyExistsException';
 
 describe('UsersServiceTests', () => {
