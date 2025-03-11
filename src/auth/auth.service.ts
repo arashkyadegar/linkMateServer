@@ -52,6 +52,7 @@ export class AuthService {
     const accessToken = await this.jwtService.sign(payload);
 
     const signInResponse: UserJwtResponse = { user: userResult, accessToken };
+ 
 
     return signInResponse;
   }
