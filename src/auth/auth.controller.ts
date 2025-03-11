@@ -25,15 +25,15 @@ export class AuthController {
     @Body() signinDto: SigninDto,
     @Res() res: Response,
   ): Promise<void> {
-    const response = await this.authService.signin(signinDto);
+    let response = await this.authService.signin(signinDto);
 
     // Set the cookie
-    res.cookie('authToken', response.accessToken, {
+    res.cookie('refresh-token', response.refreshToken, {
       httpOnly: true,
       secure: true, // Use true in production
-      maxAge: 3600000, // Cookie expiration time in milliseconds (1 hour here)
     });
 
+    response.refreshToken = '';
     res.send(response);
   }
 }

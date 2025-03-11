@@ -49,10 +49,20 @@ export class AuthService {
     }
 
     const payload = { userResult };
-    const accessToken = await this.jwtService.sign(payload);
 
-    const signInResponse: UserJwtResponse = { user: userResult, accessToken };
- 
+    const accessToken = await this.jwtService.sign(payload, {
+      expiresIn: '15m',
+    });
+
+    const refreshToken = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
+    const signInResponse: UserJwtResponse = {
+      user: userResult,
+      accessToken,
+      refreshToken,
+    };
 
     return signInResponse;
   }

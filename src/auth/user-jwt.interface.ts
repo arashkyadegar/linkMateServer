@@ -1,6 +1,7 @@
-import { LoginResponseDto } from "./dto/login-response.dto";
+import { LoginResponseDto } from './dto/login-response.dto';
 
 export interface UserJwtResponse {
-    user: LoginResponseDto;
-    accessToken: string;
-  }
+  user: LoginResponseDto;
+  accessToken: string;
+  refreshToken: string;
+}
