@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { UserEntity } from 'src/users/user.entity';
 import { SigninDto } from './dto/signin.dto';
-import { UserJwtResponse } from './user-jwt.interface';
 import { ApiTags } from '@nestjs/swagger';
 import { SigninUser, SignupUser } from './custom-decorator/swagger-decorator';
 import { Response } from 'express';
@@ -28,12 +27,15 @@ export class AuthController {
     let response = await this.authService.signin(signinDto);
 
     // Set the cookie
-    res.cookie('refresh-token', response.refreshToken, {
+    res.cookie('access-token', response.accessToken, {
       httpOnly: true,
-      secure: true, // Use true in production
+      // secure: false,
+      // sameSite: 'none',
     });
 
     response.refreshToken = '';
+    response.accessToken = '';
+
     res.send(response);
   }
 }

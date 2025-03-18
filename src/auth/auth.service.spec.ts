@@ -49,7 +49,6 @@ describe('AuthServiceTests', () => {
       });
 
       try {
-        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
         const x = await authService.signUp(enteredUser);
 
       } catch (e) {

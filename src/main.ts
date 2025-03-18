@@ -6,10 +6,17 @@ import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  //const app = await NestFactory.create(AppModule);
+  // const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+  // Enable CORS
+  app.enableCors({
+    origin: 'http://localhost:5173', // Frontend URL
+    credentials: true, // Allow cookies
+  });
+
+  app.useGlobalPipes(new ValidationPipe());
+
   const config = new DocumentBuilder()
     .setTitle('cats sample')
     .setDescription('cats api description')

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { DepartmentsModule } from './departments/departments.module';
 import { BioLinksModule } from './bio-links/bio-links.module';
 import { MapsModule } from './maps/maps.module';
@@ -12,6 +12,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { CookieMiddleware } from './middlewares/cookieMiddleware';
 
 @Module({
   imports: [
@@ -39,4 +40,10 @@ import { AuthModule } from './auth/auth.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CookieMiddleware).forRoutes(
+      { path: 'bio-links', method: RequestMethod.ALL }, // Apply to all methods of routes under 'user'
+    );
+  }
+}
