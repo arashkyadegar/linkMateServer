@@ -10,7 +10,7 @@ export class CreateImageDto {
   link: string;
 
   @IsNumber()
-  userId: string;
+  userId: number;
 
   @IsString()
   name: string;
