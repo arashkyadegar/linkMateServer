@@ -39,6 +39,6 @@ export class CreateBioLinkDto {
 }
 
 export class UpdateBioLinkDto extends CreateBioLinkDto {
-  @IsString()
-  id: string;
+  @IsNumber()
+  id: number;
 }
