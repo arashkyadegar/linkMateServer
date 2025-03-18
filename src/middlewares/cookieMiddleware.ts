@@ -3,21 +3,26 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
 
 @Injectable()
 export class CookieMiddleware implements NestMiddleware {
+  constructor(private readonly jwtService: JwtService) {}
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('Cookie middleware is called');
+    console.log('AuthMiddleware is called');
+
     const sessionToken = req.cookies['access-token'];
 
     if (!sessionToken) {
       throw new UnauthorizedException('access-token is missing');
     }
 
-    // Add your cookie validation logic here, e.g., verify session token
-    // For example, validate the session token against your database
+    if (!this.jwtService.verify(sessionToken)) {
+      throw new UnauthorizedException('access-token is not valid');
+    }
 
+    console.log(this.jwtService.verify(sessionToken));
     next();
   }
 }
