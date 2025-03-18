@@ -10,21 +10,30 @@ import {
 } from '@nestjs/common';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
 import { BioLinksService } from './bio-links.service';
+import {
+  createOneBioLink,
+  deleteOneBioLink,
+  findAllBioLinks,
+  updateOneBioLink,
+} from './custom-decorator/swagger-decorator';
 
 @Controller('bio-links')
 export class BioLinksController {
   constructor(private readonly bioLinksService: BioLinksService) {}
 
+  @createOneBioLink()
   @Post()
   createOne(@Body() createBioLinkDto: CreateBioLinkDto) {
     return this.bioLinksService.createBioLink(createBioLinkDto);
   }
 
+  @findAllBioLinks()
   @Get()
   findAll() {
     return this.bioLinksService.findAllBioLink();
   }
 
+  @updateOneBioLink()
   @Put('/:id')
   updateOne(
     @Param('id') id: number,
@@ -33,6 +42,7 @@ export class BioLinksController {
     return this.bioLinksService.updateBioLink(id, updateBioLinkDto);
   }
 
+  @deleteOneBioLink()
   @Delete('/:id')
   deleteOne(@Param('id') id: number) {
     return this.bioLinksService.deleteBioLink(id);
