@@ -23,6 +23,7 @@ export class DepartmentsController {
   static findAll(): any {
     throw new Error('Method not implemented.');
   }
+
   @FindAllDepartments() // Custom swagger-decorator for get all departments
   @Get()
   findAll(): any[] {
