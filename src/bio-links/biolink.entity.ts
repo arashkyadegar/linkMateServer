@@ -5,6 +5,8 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  ObjectId,
+  ObjectIdColumn,
 } from 'typeorm';
 import { MapEntity } from '../maps/map.entity';
 import { LinkEntity } from '../links/link.entity';
@@ -13,8 +15,8 @@ import { CreateImageDto } from '../images/create-image.dto';
 
 @Entity()
 export class BioLinkEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column()
   name: string;

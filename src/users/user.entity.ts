@@ -1,12 +1,19 @@
 // src/maps/map.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Unique,
+  ObjectIdColumn,
+  ObjectId,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
 @Unique(['email'])
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: ObjectId;
 
   @Column({ default: '' })
   name: string;

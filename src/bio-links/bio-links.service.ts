@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
 import { BioLinkEntity } from './biolink.entity';
-import { Repository } from 'typeorm';
+import { ObjectId, Repository } from 'typeorm';
 import { MapsService } from '../maps/maps.service';
 
 @Injectable()
@@ -57,7 +57,7 @@ export class BioLinksService {
   }
 
   async updateBioLink(
-    id: number, // or your identifier type
+    id: string, // or your identifier type
     updateBioLinkDto: UpdateBioLinkDto,
   ): Promise<BioLinkEntity> {
     const {
@@ -73,7 +73,10 @@ export class BioLinksService {
       slider,
     } = updateBioLinkDto;
 
-    const bioLink = await this.bioLinkRepository.findOne({ where: { id } });
+    const bioLink = await this.bioLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+    });
+
     if (!bioLink) {
       throw new NotFoundException(`BioLink with ID ${id} not found`);
     }
@@ -86,7 +89,7 @@ export class BioLinksService {
 
     Object.assign(bioLink, {
       name,
-      userId,
+      // userId,
       link,
       video,
       title,
@@ -100,8 +103,10 @@ export class BioLinksService {
     return this.bioLinkRepository.save(bioLink);
   }
 
-  async deleteBioLink(id: number): Promise<void> {
-    const bioLink = await this.bioLinkRepository.findOne({ where: { id } });
+  async deleteBioLink(id: string): Promise<void> {
+    const bioLink = await this.bioLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+    });
 
     if (!bioLink) {
       throw new NotFoundException(`BioLink with ID ${id} not found`);

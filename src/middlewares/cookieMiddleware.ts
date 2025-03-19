@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class CookieMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
-  use(req: Request, res: Response, next: NextFunction) {
+  use(req: any, res: Response, next: NextFunction) {
     console.log('AuthMiddleware is called');
 
     const sessionToken = req.cookies['access-token'];
@@ -18,10 +18,13 @@ export class CookieMiddleware implements NestMiddleware {
       throw new UnauthorizedException('access-token is missing');
     }
 
-    if (!this.jwtService.verify(sessionToken)) {
+    const decodedToken = this.jwtService.verify(sessionToken);
+
+    if (!decodedToken) {
       throw new UnauthorizedException('access-token is not valid');
     }
 
+    req.userId = decodedToken.userResult._id;
     console.log(this.jwtService.verify(sessionToken));
     next();
   }

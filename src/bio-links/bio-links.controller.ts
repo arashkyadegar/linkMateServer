@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
@@ -23,20 +24,23 @@ export class BioLinksController {
 
   @createOneBioLink()
   @Post()
-  createOne(@Body() createBioLinkDto: CreateBioLinkDto) {
+  createOne(@Body() createBioLinkDto: CreateBioLinkDto, @Req() req: any) {
+    createBioLinkDto.userId = req.userId; //this is extracted from cookie in cookieMiddleware
     return this.bioLinksService.createBioLink(createBioLinkDto);
   }
 
   @findAllBioLinks()
   @Get()
-  findAll() {
+  findAll(@Req() req: any) {
+    ///must define types ...i dont know it
+    const userId = req.userId; //this is extracted from cookie in cookieMiddleware
     return this.bioLinksService.findAllBioLink();
   }
 
   @updateOneBioLink()
   @Put('/:id')
   updateOne(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body(new ValidationPipe()) updateBioLinkDto: UpdateBioLinkDto,
   ) {
     return this.bioLinksService.updateBioLink(id, updateBioLinkDto);
@@ -44,7 +48,7 @@ export class BioLinksController {
 
   @deleteOneBioLink()
   @Delete('/:id')
-  deleteOne(@Param('id') id: number) {
+  deleteOne(@Param('id') id: string) {
     return this.bioLinksService.deleteBioLink(id);
   }
 }
