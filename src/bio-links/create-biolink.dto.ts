@@ -1,4 +1,13 @@
-import { IsNumber, IsString, IsUrl, Length } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  ValidateNested,
+} from 'class-validator';
 import { CreateImageDto } from 'src/images/create-image.dto';
 import { CreateLinkDto } from 'src/links/create-link.dto';
 import { CreateMapDto } from 'src/maps/create-map.dto';
@@ -9,36 +18,51 @@ export class CreateBioLinkDto {
   @Length(3, 10)
   name: string;
 
-  maps: CreateMapDto | undefined;
-
-  @IsNumber()
-  userId: string = '';
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateMapDto)
+  maps: CreateMapDto;
 
   @IsString()
-  @Length(3, 50)
-  link: string = '';
+  userId: string;
 
   @IsUrl()
-  video: string = '';
+  @Length(3, 50)
+  link: string;
+
+  @IsOptional()
+  @IsUrl()
+  video: string;
 
   @Length(3, 50)
   @IsString()
-  title: string = '';
+  title: string;
 
   @Length(10, 400)
-  desc: string = '';
+  desc: string;
 
+  @ValidateNested({ each: true })
+  @Type(() => CreateLinkDto)
   links: CreateLinkDto[];
 
+  @ValidateNested({ each: true })
+  @Type(() => CreateSuperLinkDto)
   superLinks: CreateSuperLinkDto[];
 
+  @ValidateNested({ each: true })
+  @Type(() => CreateImageDto)
   slider: CreateImageDto[];
 
+  @IsOptional()
+  @IsDate()
   createdAt: Date | undefined;
+
+  @IsOptional()
+  @IsDate()
   updatedAt: Date | undefined;
 }
 
 export class UpdateBioLinkDto extends CreateBioLinkDto {
-  @IsNumber()
-  id: number;
+  @IsString()
+  id: string;
 }
