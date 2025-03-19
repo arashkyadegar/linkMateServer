@@ -17,15 +17,25 @@ import { CookieMiddleware } from './middlewares/cookieMiddleware';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'arashk',
+      type: 'mongodb',
+      host: '127.0.0.1',
+      port: 27017,
       database: 'dmpanel',
+      // useUnifiedTopology: true, 
       entities: [BioLinkEntity, MapEntity, UserEntity],
-      synchronize: true,
+      // synchronize: true,
     }),
+
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   host: 'localhost',
+    //   port: 5432,
+    //   username: 'postgres',
+    //   password: 'arashk',
+    //   database: 'dmpanel',
+    //   entities: [BioLinkEntity, MapEntity, UserEntity],
+    //   synchronize: true,
+    // }),
     ImagesModule,
     SuperLinksModule,
     LinksModule,
