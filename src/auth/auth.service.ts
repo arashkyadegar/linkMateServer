@@ -20,7 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUserById(userId: number) {
+  async validateUserById(userId: string) {
     return await this.userService.findById(userId);
   }
 
