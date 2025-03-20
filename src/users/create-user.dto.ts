@@ -13,6 +13,6 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @Length(8)
+  @Length(8, 20)
   password: string;
 }

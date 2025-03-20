@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
 import { BioLinkEntity } from './biolink.entity';
@@ -6,7 +6,6 @@ import { ObjectId } from 'mongodb';
 import { MongoRepository } from 'typeorm';
 import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 import { createPaginatedResult } from 'src/common/helpers/createPaginatedResult';
-// import { MapsService } from '../maps/maps.service';
 
 @Injectable()
 export class BioLinksService {
@@ -31,6 +30,12 @@ export class BioLinksService {
       superLinks,
       slider,
     } = createBioLinkDto;
+
+    const IsAlreadyExist = await this.findBioLinkbyLink(link);
+
+    if (IsAlreadyExist) {
+      throw new NotFoundException(`BioLink with Link ${link} is Existed`);
+    }
 
     const bioLink = this.bioLinkRepository.create({
       name,
@@ -104,12 +109,6 @@ export class BioLinksService {
       throw new NotFoundException(`BioLink with ID ${id} not found`);
     }
 
-    let updatedMap;
-
-    // if (maps) {
-    //   updatedMap = await this.mapsService.updateMap(bioLink.map.id, maps);
-    // }
-
     Object.assign(bioLink, {
       name,
       // userId,
@@ -117,7 +116,7 @@ export class BioLinksService {
       video,
       title,
       desc,
-      map: updatedMap || bioLink.map,
+      map,
       links,
       superLinks,
       slider,
@@ -150,5 +149,17 @@ export class BioLinksService {
     }
 
     await this.bioLinkRepository.remove(bioLink);
+  }
+
+  async findBioLinkbyLink(link: string): Promise<BioLinkEntity> {
+    const bioLink = await this.bioLinkRepository.findOneBy({
+      link: link,
+    });
+
+    if (!bioLink) {
+      throw new NotFoundException(`BioLink with Link ${link} is Existed`);
+    }
+
+    return bioLink;
   }
 }

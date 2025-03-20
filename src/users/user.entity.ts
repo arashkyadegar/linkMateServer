@@ -1,12 +1,5 @@
 // src/maps/map.entity.ts
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  Unique,
-  ObjectIdColumn,
-  ObjectId,
-} from 'typeorm';
+import { Entity, Column, Unique, ObjectIdColumn, ObjectId } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @Entity()
