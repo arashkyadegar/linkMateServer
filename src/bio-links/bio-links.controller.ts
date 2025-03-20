@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import {
   findAllBioLinks,
   updateOneBioLink,
 } from './custom-decorator/swagger-decorator';
+import { PageSizeConstants } from 'src/constants';
 
 @Controller('bio-links')
 export class BioLinksController {
@@ -31,10 +33,12 @@ export class BioLinksController {
 
   @findAllBioLinks()
   @Get()
-  findAll(@Req() req: any) {
-    ///must define types ...i dont know it
+  findAll(@Req() req: any, @Query() query: Record<string, any>) {
+    ///must define req type ...i dont know how to do it
+    const { page = 1 } = query; // Set defaults if not provided
     const userId = req.userId; //this is extracted from cookie in cookieMiddleware
-    return this.bioLinksService.findAllBioLink();
+    const { pageSize } = PageSizeConstants;
+    return this.bioLinksService.findAllBioLink(page, pageSize, userId);
   }
 
   @updateOneBioLink()
@@ -42,13 +46,24 @@ export class BioLinksController {
   updateOne(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateBioLinkDto: UpdateBioLinkDto,
+    @Req() req: any,
   ) {
+    updateBioLinkDto.userId = req.userId; //this is extracted from cookie in cookieMiddleware
+
     return this.bioLinksService.updateBioLink(id, updateBioLinkDto);
   }
 
   @deleteOneBioLink()
   @Delete('/:id')
-  deleteOne(@Param('id') id: string) {
-    return this.bioLinksService.deleteBioLink(id);
+  deleteOne(@Param('id') id: string, @Req() req: any) {
+    const userId = req.userId; //this is extracted from cookie in cookieMiddleware
+
+    return this.bioLinksService.deleteBioLink(id, userId);
+  }
+
+  @Get('/:id')
+  findOne(@Param('id') id: string, @Req() req: any) {
+    const userId = req.userId; //this is extracted from cookie in cookieMiddleware
+    return this.bioLinksService.findOneBioLink(id, userId);
   }
 }

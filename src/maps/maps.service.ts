@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateMapDto } from './create-map.dto';
 import { MapEntity } from './map.entity';
-import { MapRepository } from './maps.repository';
+// import { MapRepository } from './maps.repository';
 import { Repository } from 'typeorm';
 
 @Injectable()

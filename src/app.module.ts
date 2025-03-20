@@ -21,7 +21,7 @@ import { CookieMiddleware } from './middlewares/cookieMiddleware';
       host: '127.0.0.1',
       port: 27017,
       database: 'dmpanel',
-      // useUnifiedTopology: true, 
+      // useUnifiedTopology: true,
       entities: [BioLinkEntity, MapEntity, UserEntity],
       // synchronize: true,
     }),

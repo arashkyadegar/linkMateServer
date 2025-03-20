@@ -8,6 +8,7 @@ import {
   Length,
   ValidateNested,
 } from 'class-validator';
+import { ObjectId } from 'mongodb';
 import { CreateImageDto } from 'src/images/create-image.dto';
 import { CreateLinkDto } from 'src/links/create-link.dto';
 import { CreateMapDto } from 'src/maps/create-map.dto';
@@ -21,12 +22,11 @@ export class CreateBioLinkDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => CreateMapDto)
-  maps: CreateMapDto;
+  map: CreateMapDto;
 
   @IsString()
-  userId: string;
+  userId: ObjectId;
 
-  @IsUrl()
   @Length(3, 50)
   link: string;
 

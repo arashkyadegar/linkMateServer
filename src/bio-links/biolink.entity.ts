@@ -1,13 +1,5 @@
 // src/biolink/biolink.entity.ts
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-  ObjectId,
-  ObjectIdColumn,
-} from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 import { MapEntity } from '../maps/map.entity';
 import { LinkEntity } from '../links/link.entity';
 import { SuperLinkEntity } from '../super-links/superlink.entity';
@@ -21,10 +13,9 @@ export class BioLinkEntity {
   @Column()
   name: string;
 
-  @Column()
-  userId: string;
+  @ObjectIdColumn()
+  userId: ObjectId;
 
-  @Column()
   link: string;
 
   @Column()
@@ -45,7 +36,9 @@ export class BioLinkEntity {
   @Column('jsonb')
   slider: CreateImageDto[];
 
-  @OneToOne(() => MapEntity, { cascade: true })
-  @JoinColumn()
+  // @OneToOne(() => MapEntity, { cascade: true })
+  // @JoinColumn()
+
+  @Column('jsonb')
   map: MapEntity;
 }
