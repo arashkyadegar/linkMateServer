@@ -34,7 +34,7 @@ describe('AuthServiceTests', () => {
   describe('validateUserById', () => {
     it('should return null if service returns null', async () => {
       jest.spyOn(usersService, 'findById').mockResolvedValue(null);
-      const result = await authService.validateUserById(1);
+      const result = await authService.validateUserById("112");
 
       await expect(result).toBeFalsy();
     });

@@ -1,10 +1,9 @@
 // src/biolink/biolink.entity.ts
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn, Unique } from 'typeorm';
 import { MapEntity } from '../maps/map.entity';
 import { LinkEntity } from '../links/link.entity';
 import { SuperLinkEntity } from '../super-links/superlink.entity';
 import { CreateImageDto } from '../images/create-image.dto';
-import { Length } from 'class-validator';
 
 @Entity()
 export class BioLinkEntity {

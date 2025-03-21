@@ -18,11 +18,14 @@ import {
   findAllBioLinks,
   updateOneBioLink,
 } from './custom-decorator/swagger-decorator';
-import { PageSizeConstants } from 'src/constants';
+import { EnvConfigService } from 'src/env-config/env-config.service';
 
 @Controller('bio-links')
 export class BioLinksController {
-  constructor(private readonly bioLinksService: BioLinksService) {}
+  constructor(
+    private readonly bioLinksService: BioLinksService,
+    private envConfigService: EnvConfigService,
+  ) {}
 
   @createOneBioLink()
   @Post()
@@ -37,7 +40,7 @@ export class BioLinksController {
     ///must define req type ...i dont know how to do it
     const { page = 1 } = query; // Set defaults if not provided
     const userId = req.userId; //this is extracted from cookie in cookieMiddleware
-    const { pageSize } = PageSizeConstants;
+    const pageSize = this.envConfigService.getPageSize();
     return this.bioLinksService.findAllBioLink(page, pageSize, userId);
   }
 

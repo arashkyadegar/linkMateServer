@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CookieMiddleware } from './middlewares/cookieMiddleware';
+import { EnvConfigModule } from './env-config/env-config.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CookieMiddleware } from './middlewares/cookieMiddleware';
     UploadsModule,
     UsersModule,
     AuthModule,
+    EnvConfigModule,
   ],
   controllers: [],
   providers: [],
