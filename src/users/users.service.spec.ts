@@ -32,7 +32,7 @@ describe('UsersServiceTests', () => {
       enteredUser.email = 'user@gmail.com';
       enteredUser.password = '123123';
 
-      jest.spyOn(repository, 'findOne').mockResolvedValue(enteredUser);
+      jest.spyOn(repository, 'findOneBy').mockResolvedValue(enteredUser);
 
       try {
         await service.create(enteredUser);
@@ -48,7 +48,7 @@ describe('UsersServiceTests', () => {
       newUser.email = 'newuser@gmail.com';
       newUser.password = 'password123';
       newUser.salt = '';
-      jest.spyOn(repository, 'findOne').mockResolvedValue(null);
+      jest.spyOn(repository, 'findOneBy').mockResolvedValue(null);
       jest.spyOn(repository, 'create').mockReturnValue(newUser);
       jest.spyOn(repository, 'save').mockResolvedValue(newUser);
 

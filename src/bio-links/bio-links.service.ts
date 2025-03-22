@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
 import { BioLinkEntity } from './biolink.entity';
@@ -157,7 +161,7 @@ export class BioLinksService {
     });
 
     if (!bioLink) {
-      throw new NotFoundException(`BioLink with Link ${link} is Existed`);
+      throw new ConflictException(`BioLink with Link ${link} is Existed`);
     }
 
     return bioLink;

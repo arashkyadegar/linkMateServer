@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import { CreateBioLinkDto, UpdateBioLinkDto } from './create-biolink.dto';
 import { BioLinksService } from './bio-links.service';
-import {
-  createOneBioLink,
-  deleteOneBioLink,
-  findAllBioLinks,
-  updateOneBioLink,
-} from './custom-decorator/swagger-decorator';
+// import {
+//   createOneBioLink,
+//   deleteOneBioLink,
+//   findAllBioLinks,
+//   updateOneBioLink,
+// } from './custom-decorator/swagger-decorator';
 import { EnvConfigService } from 'src/env-config/env-config.service';
 
 @Controller('bio-links')
@@ -27,14 +27,14 @@ export class BioLinksController {
     private envConfigService: EnvConfigService,
   ) {}
 
-  @createOneBioLink()
+  // @createOneBioLink()
   @Post()
   createOne(@Body() createBioLinkDto: CreateBioLinkDto, @Req() req: any) {
     createBioLinkDto.userId = req.userId; //this is extracted from cookie in cookieMiddleware
     return this.bioLinksService.createBioLink(createBioLinkDto);
   }
 
-  @findAllBioLinks()
+  // @findAllBioLinks()
   @Get()
   findAll(@Req() req: any, @Query() query: Record<string, any>) {
     ///must define req type ...i dont know how to do it
@@ -44,7 +44,7 @@ export class BioLinksController {
     return this.bioLinksService.findAllBioLink(page, pageSize, userId);
   }
 
-  @updateOneBioLink()
+  // @updateOneBioLink()
   @Put('/:id')
   updateOne(
     @Param('id') id: string,
@@ -56,7 +56,7 @@ export class BioLinksController {
     return this.bioLinksService.updateBioLink(id, updateBioLinkDto);
   }
 
-  @deleteOneBioLink()
+  // @deleteOneBioLink()
   @Delete('/:id')
   deleteOne(@Param('id') id: string, @Req() req: any) {
     const userId = req.userId; //this is extracted from cookie in cookieMiddleware

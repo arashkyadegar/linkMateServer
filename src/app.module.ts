@@ -14,6 +14,9 @@ import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CookieMiddleware } from './middlewares/cookieMiddleware';
 import { EnvConfigModule } from './env-config/env-config.module';
+import { OneTimeLinksModule } from './one-time-links/one-time-links.module';
+import { PasswordLinksModule } from './password-links/password-links.module';
+import { ShortLinksModule } from './short-links/short-links.module';
 
 @Module({
   imports: [
@@ -48,6 +51,9 @@ import { EnvConfigModule } from './env-config/env-config.module';
     UsersModule,
     AuthModule,
     EnvConfigModule,
+    OneTimeLinksModule,
+    PasswordLinksModule,
+    ShortLinksModule,
   ],
   controllers: [],
   providers: [],

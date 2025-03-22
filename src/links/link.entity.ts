@@ -1,12 +1,5 @@
 // src/biolink/biolink.entity.ts
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
-import { MapEntity } from '../maps/map.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class LinkEntity {
@@ -18,5 +11,4 @@ export class LinkEntity {
 
   @Column()
   link: string;
-
 }

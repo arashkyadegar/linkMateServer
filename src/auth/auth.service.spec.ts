@@ -7,7 +7,6 @@ import { Repository } from 'typeorm';
 import { UserEntity } from '../users/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { EmailAlreadyExistsException } from '../users/custom-exception/EmailAlreadyExistsException';
-import { HttpException } from '@nestjs/common';
 
 describe('AuthServiceTests', () => {
   let authService: AuthService;
@@ -34,7 +33,7 @@ describe('AuthServiceTests', () => {
   describe('validateUserById', () => {
     it('should return null if service returns null', async () => {
       jest.spyOn(usersService, 'findById').mockResolvedValue(null);
-      const result = await authService.validateUserById("112");
+      const result = await authService.validateUserById('112');
 
       await expect(result).toBeFalsy();
     });
@@ -50,7 +49,6 @@ describe('AuthServiceTests', () => {
 
       try {
         const x = await authService.signUp(enteredUser);
-
       } catch (e) {
         expect(e).toBeInstanceOf(EmailAlreadyExistsException);
       }

@@ -9,10 +9,11 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ObjectId } from 'mongodb';
-import { CreateImageDto } from 'src/images/create-image.dto';
+
 import { CreateLinkDto } from 'src/links/create-link.dto';
 import { CreateMapDto } from 'src/maps/create-map.dto';
 import { CreateSuperLinkDto } from 'src/super-links/create-superlink.dto';
+import { CreateImageDto } from 'src/images/create-image.dto';
 
 export class CreateBioLinkDto {
   @IsString()
