@@ -10,8 +10,8 @@ import { ShortLinkEntity } from './entities/short-link.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
-import { createPaginatedResult } from 'src/common/helpers/createPaginatedResult';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
+import { createPaginatedResult } from '../common/helpers/createPaginatedResult';
 
 @Injectable()
 export class ShortLinksService {
@@ -19,7 +19,7 @@ export class ShortLinksService {
     @InjectRepository(ShortLinkEntity)
     private shortLinkRepository: MongoRepository<ShortLinkEntity>,
   ) {}
-  async create(
+  async createShortLink(
     createShortLinkDto: CreateShortLinkDto,
   ): Promise<ShortLinkEntity> {
     let { userId, originalUrl, shortCode, visitCount, expirationDate } =
@@ -33,15 +33,16 @@ export class ShortLinksService {
       );
     }
 
-    const bioLink = this.shortLinkRepository.create({
+    const shortLink = this.shortLinkRepository.create({
       ...(userId && { userId }),
       originalUrl,
       shortCode,
       visitCount,
       expirationDate,
+      createdAt: Date.now(),
     });
 
-    return this.shortLinkRepository.save(bioLink);
+    return this.shortLinkRepository.save(shortLink);
   }
 
   findAll() {
@@ -72,43 +73,87 @@ export class ShortLinksService {
     return createPaginatedResult(result, totalCount);
   }
 
-  async findOneBioLink(id: string, userId: string): Promise<ShortLinkEntity> {
-    
+  async findOneShortLink(id: string, userId: string): Promise<ShortLinkEntity> {
     if (!ObjectId.isValid(id) || !ObjectId.isValid(userId)) {
       throw new BadRequestException('Invalid ID or UserID format.');
     }
 
-    const bioLink = await this.shortLinkRepository.findOneBy({
+    const shortLink = await this.shortLinkRepository.findOneBy({
       _id: new ObjectId(id),
       userId: new ObjectId(userId),
     });
 
-    if (!bioLink) {
+    if (!shortLink) {
       throw new NotFoundException(`BioLink with ID ${id} not found`);
     }
 
-    return bioLink;
+    return shortLink;
   }
 
-  update(id: number, updateShortLinkDto: UpdateShortLinkDto) {
-    return `This action updates a #${id} shortLink`;
+  async updateShortLink(id: string, updateShortLinkDto: UpdateShortLinkDto) {
+    const { userId, originalUrl, shortCode, visitCount, expirationDate } =
+      updateShortLinkDto;
+
+    if (!userId) {
+      throw new BadRequestException('Invalid ID or UserID format.');
+    }
+
+    if (!ObjectId.isValid(id) || !ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid ID or UserID format.');
+    }
+
+    const shortLink = await this.shortLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId),
+    });
+
+    if (!shortLink) {
+      throw new NotFoundException(`shortLink with ID ${id} not found`);
+    }
+
+    Object.assign(shortLink, {
+      originalUrl,
+      shortCode,
+      visitCount,
+      expirationDate,
+      updatedAt: Date.now(),
+    });
+
+    return this.shortLinkRepository.save(shortLink);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} shortLink`;
+  async deleteShortLink(id: string, userId: string) {
+    const shortLink = await this.shortLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId),
+    });
+
+    if (!shortLink) {
+      throw new NotFoundException(`shortLink with ID ${id} not found`);
+    }
+
+    await this.shortLinkRepository.remove(shortLink);
   }
 
-  async findShortLinkbyShortCode(shortCode: string): Promise<ShortLinkEntity> {
+  async findShortLinkbyShortCode(
+    shortCode: string,
+  ): Promise<ShortLinkEntity | null> {
     const shortLink = await this.shortLinkRepository.findOneBy({
       shortCode: shortCode,
     });
 
-    if (!shortLink) {
-      throw new ConflictException(
-        `shortLink with shortCode ${shortCode} is Existed`,
-      );
-    }
-
     return shortLink;
+  }
+
+  async checkLinkExpire(shortLinkentity: ShortLinkEntity): Promise<boolean> {
+    const now = new Date();
+    // Check if the link has expired
+    if (
+      shortLinkentity.expirationDate &&
+      shortLinkentity.expirationDate < now
+    ) {
+      return true;
+    }
+    return false;
   }
 }

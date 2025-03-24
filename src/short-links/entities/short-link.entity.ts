@@ -18,4 +18,10 @@ export class ShortLinkEntity {
 
   @Column({ nullable: true })
   expirationDate: Date;
+
+  @Column({ nullable: true })
+  createdAt: Date;
+
+  @Column({ nullable: true })
+  updatedAt: Date;
 }

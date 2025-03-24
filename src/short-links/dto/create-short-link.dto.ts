@@ -33,13 +33,9 @@ export class CreateShortLinkDto {
 
   @IsOptional()
   @IsDate()
-  expirationDate: Date | undefined;
+  expirationDate: Date;
 
   @IsOptional()
   @IsDate()
-  createdAt: Date | undefined;
-
-  @IsOptional()
-  @IsDate()
-  updatedAt: Date | undefined;
+  createdAt: Date;
 }
