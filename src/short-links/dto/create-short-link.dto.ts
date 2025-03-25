@@ -31,9 +31,9 @@ export class CreateShortLinkDto {
   @Matches(/^[a-f\d]{24}$/, { message: 'userId must be a valid ObjectId.' })
   userId: ObjectId | null;
 
-  @IsOptional()
-  @IsDate()
-  expirationDate: Date;
+  isSingleUse: boolean = false; // Default is false, meaning not single-use.
+
+  isUsed: boolean; // Tracks usage status.
 
   @IsOptional()
   @IsDate()

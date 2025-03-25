@@ -22,7 +22,7 @@ export class ShortLinksService {
   async createShortLink(
     createShortLinkDto: CreateShortLinkDto,
   ): Promise<ShortLinkEntity> {
-    let { userId, originalUrl, shortCode, visitCount, expirationDate } =
+    let { userId, originalUrl, shortCode, visitCount, isSingleUse, isUsed } =
       createShortLinkDto;
 
     const existingShortLink = await this.findShortLinkbyShortCode(shortCode);
@@ -38,7 +38,8 @@ export class ShortLinksService {
       originalUrl,
       shortCode,
       visitCount,
-      expirationDate,
+      isSingleUse,
+      isUsed,
       createdAt: Date.now(),
     });
 
@@ -91,8 +92,7 @@ export class ShortLinksService {
   }
 
   async updateShortLink(id: string, updateShortLinkDto: UpdateShortLinkDto) {
-    const { userId, originalUrl, shortCode, visitCount, expirationDate } =
-      updateShortLinkDto;
+    const { userId, originalUrl, shortCode, visitCount } = updateShortLinkDto;
 
     if (!userId) {
       throw new BadRequestException('Invalid ID or UserID format.');
@@ -115,11 +115,35 @@ export class ShortLinksService {
       originalUrl,
       shortCode,
       visitCount,
-      expirationDate,
       updatedAt: Date.now(),
     });
 
     return this.shortLinkRepository.save(shortLink);
+  }
+
+  async patchShortLink(
+    id: string,
+    updateFields: Partial<CreateShortLinkDto>,
+  ): Promise<ShortLinkEntity> {
+    // Validate the ID
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID');
+    }
+
+    // Find the existing short link
+    const shortLink = await this.shortLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+    });
+
+    if (!shortLink) {
+      throw new NotFoundException(`ShortLink with ID ${id} not found`);
+    }
+
+    // Apply only the specified updates
+    Object.assign(shortLink, updateFields, { updatedAt: new Date() });
+
+    // Save and return the updated short link
+    return await this.shortLinkRepository.save(shortLink);
   }
 
   async deleteShortLink(id: string, userId: string) {
@@ -145,15 +169,15 @@ export class ShortLinksService {
     return shortLink;
   }
 
-  async checkLinkExpire(shortLinkentity: ShortLinkEntity): Promise<boolean> {
-    const now = new Date();
-    // Check if the link has expired
-    if (
-      shortLinkentity.expirationDate &&
-      shortLinkentity.expirationDate < now
-    ) {
-      return true;
-    }
-    return false;
-  }
+  // async checkLinkExpire(shortLinkentity: ShortLinkEntity): Promise<boolean> {
+  //   const now = new Date();
+  //   // Check if the link has expired
+  //   if (
+  //     shortLinkentity.expirationDate &&
+  //     shortLinkentity.expirationDate < now
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

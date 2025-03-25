@@ -16,8 +16,11 @@ export class ShortLinkEntity {
   @ObjectIdColumn()
   userId: ObjectId;
 
+  @Column({ default: false })
+  isSingleUse: boolean;
+
   @Column({ nullable: true })
-  expirationDate: Date;
+  isUsed: boolean;
 
   @Column({ nullable: true })
   createdAt: Date;

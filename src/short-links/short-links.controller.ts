@@ -34,18 +34,24 @@ export class ShortLinksController {
     const targetLink =
       await this.shortLinksService.findShortLinkbyShortCode(shortCode);
     if (targetLink) {
-      const now = new Date();
-      // Check if the link has expired
-      const isExpired =
-        await this.shortLinksService.checkLinkExpire(targetLink);
-      if (isExpired) {
-        return { statusCode: 410, message: 'This link has expired.' }; // 410: Gone
+      // const now = new Date();
+      if (targetLink.isSingleUse) {
+        if (targetLink.isUsed) {
+          return {
+            statusCode: HttpStatus.GONE,
+            message: 'This link has expired.',
+          }; // 410: Gone
+        }
       }
-
+      // we must increase visitcount each time link is visited
+      await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
+        visitCount: targetLink.visitCount + 1,
+        isUsed: targetLink.isSingleUse && !targetLink.isUsed,
+      });
       return { statusCode: HttpStatus.FOUND, targetLink };
     }
 
-    return { statusCode: 404, message: 'Shortlink not found' };
+    return { statusCode: HttpStatus.NOT_FOUND, message: 'Shortlink not found' };
   }
 
   @Get('/findbyuserid')
