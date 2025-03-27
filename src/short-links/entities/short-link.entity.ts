@@ -1,5 +1,6 @@
-import { Column, ObjectId, ObjectIdColumn } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 
+@Entity()
 export class ShortLinkEntity {
   @ObjectIdColumn()
   _id: ObjectId;

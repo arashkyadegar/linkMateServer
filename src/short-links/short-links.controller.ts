@@ -25,29 +25,29 @@ export class ShortLinksController {
 
   @Post()
   create(@Body() createShortLinkDto: CreateShortLinkDto) {
+    console.log('Request Received:', createShortLinkDto);
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 
   @Redirect()
-  @Get('/shortlink/:code')
+  @Get('/shortlink/:shortCode')
   async redirectToTarget(@Param('shortCode') shortCode: string) {
     const targetLink =
       await this.shortLinksService.findShortLinkbyShortCode(shortCode);
     if (targetLink) {
       // const now = new Date();
-      if (targetLink.isSingleUse) {
-        if (targetLink.isUsed) {
-          return {
-            statusCode: HttpStatus.GONE,
-            message: 'This link has expired.',
-          }; // 410: Gone
-        }
+      if (targetLink.isSingleUse && targetLink.isUsed) {
+        return {
+          statusCode: HttpStatus.GONE,
+          message: 'This link has expired.',
+        }; // 410: Gone
       }
       // we must increase visitcount each time link is visited
       await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
         visitCount: targetLink.visitCount + 1,
         isUsed: targetLink.isSingleUse && !targetLink.isUsed,
       });
+      
       return { statusCode: HttpStatus.FOUND, targetLink };
     }
 

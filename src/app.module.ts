@@ -17,6 +17,8 @@ import { EnvConfigModule } from './env-config/env-config.module';
 import { OneTimeLinksModule } from './one-time-links/one-time-links.module';
 import { PasswordLinksModule } from './password-links/password-links.module';
 import { ShortLinksModule } from './short-links/short-links.module';
+import { ShortLinkEntity } from './short-links/entities/short-link.entity';
+import { RandomWordsModule } from './random-words/random-words.module';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { ShortLinksModule } from './short-links/short-links.module';
       port: 27017,
       database: 'dmpanel',
       // useUnifiedTopology: true,
-      entities: [BioLinkEntity, MapEntity, UserEntity],
+      entities: [BioLinkEntity, MapEntity, UserEntity, ShortLinkEntity],
       // synchronize: true,
     }),
 
@@ -54,6 +56,7 @@ import { ShortLinksModule } from './short-links/short-links.module';
     OneTimeLinksModule,
     PasswordLinksModule,
     ShortLinksModule,
+    RandomWordsModule,
   ],
   controllers: [],
   providers: [],
@@ -62,9 +65,9 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CookieMiddleware).forRoutes(
       { path: 'bio-links', method: RequestMethod.ALL }, // Apply to all methods of routes under 'user'
-      { path: 'short-links', method: RequestMethod.DELETE },
-      { path: 'short-links', method: RequestMethod.PUT },
-      { path: 'short-links', method: RequestMethod.GET },
+      // { path: 'short-links', method: RequestMethod.DELETE },
+      // { path: 'short-links', method: RequestMethod.PUT },
+      // { path: 'short-links', method: RequestMethod.GET },
       { path: 'short-links/findbyuserid', method: RequestMethod.GET },
     );
   }

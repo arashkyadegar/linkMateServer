@@ -12,25 +12,34 @@ import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
 import { createPaginatedResult } from '../common/helpers/createPaginatedResult';
+import { RandomWordsService } from 'src/random-words/random-words.service';
 
 @Injectable()
 export class ShortLinksService {
   constructor(
     @InjectRepository(ShortLinkEntity)
     private shortLinkRepository: MongoRepository<ShortLinkEntity>,
+    private readonly randomWordsService: RandomWordsService,
   ) {}
+
   async createShortLink(
     createShortLinkDto: CreateShortLinkDto,
   ): Promise<ShortLinkEntity> {
     let { userId, originalUrl, shortCode, visitCount, isSingleUse, isUsed } =
       createShortLinkDto;
-
-    const existingShortLink = await this.findShortLinkbyShortCode(shortCode);
-
-    if (existingShortLink) {
-      throw new ConflictException(
-        `A ShortLink with shortCode ${shortCode} is Existed`,
+    const shortCodeSet = await this.findAllShortCodes();
+    if (!shortCode) {
+      shortCode = this.randomWordsService.generateRandomString(
+        6,
+        12,
+        shortCodeSet,
       );
+    } else {
+      if (shortCodeSet.has(shortCode)) {
+        throw new ConflictException(
+          `A ShortLink with shortCode ${shortCode} is Existed`,
+        );
+      }
     }
 
     const shortLink = this.shortLinkRepository.create({
@@ -72,6 +81,15 @@ export class ShortLinksService {
     ]);
 
     return createPaginatedResult(result, totalCount);
+  }
+
+  async findAllShortCodes(): Promise<Set<string>> {
+    const shortLinks = await this.shortLinkRepository.find({
+      select: ['shortCode'], // Only fetch the "shortCode" column
+    });
+
+    // Extract shortCode values and save them in a Set
+    return new Set(shortLinks.map((link) => link.shortCode));
   }
 
   async findOneShortLink(id: string, userId: string): Promise<ShortLinkEntity> {
