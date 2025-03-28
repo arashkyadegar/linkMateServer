@@ -29,7 +29,7 @@ export class ShortLinksController {
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 
-  @Redirect()
+  // @Redirect()
   @Get('/shortlink/:shortCode')
   async redirectToTarget(@Param('shortCode') shortCode: string) {
     const targetLink =
