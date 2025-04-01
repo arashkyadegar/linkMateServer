@@ -20,6 +20,7 @@ import { ShortLinksModule } from './short-links/short-links.module';
 import { ShortLinkEntity } from './short-links/entities/short-link.entity';
 import { RandomWordsModule } from './random-words/random-words.module';
 import { OptionalAuthMiddleware } from './middlewares/optionalCookieMiddleware';
+import { PasswordLinkEntity } from './password-links/entities/password-link.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -28,7 +29,13 @@ import { OptionalAuthMiddleware } from './middlewares/optionalCookieMiddleware';
       port: 27017,
       database: 'dmpanel',
       // useUnifiedTopology: true,
-      entities: [BioLinkEntity, MapEntity, UserEntity, ShortLinkEntity],
+      entities: [
+        BioLinkEntity,
+        MapEntity,
+        UserEntity,
+        ShortLinkEntity,
+        PasswordLinkEntity,
+      ],
       // synchronize: true,
     }),
 
@@ -42,6 +49,7 @@ import { OptionalAuthMiddleware } from './middlewares/optionalCookieMiddleware';
     //   entities: [BioLinkEntity, MapEntity, UserEntity],
     //   synchronize: true,
     // }),
+
     ImagesModule,
     SuperLinksModule,
     LinksModule,
@@ -66,6 +74,7 @@ export class AppModule {
     consumer.apply(CookieMiddleware).forRoutes(
       { path: 'bio-links', method: RequestMethod.ALL }, // Apply to all methods of routes under 'user'
       { path: 'short-links/findbyuserid', method: RequestMethod.GET },
+      // { path: 'password-links', method: RequestMethod.ALL },
     );
 
     // Apply optional OptionalAuthMiddleware

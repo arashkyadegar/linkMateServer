@@ -28,7 +28,7 @@ export class ShortLinksService {
     let { userId, originalUrl, shortCode, visitCount, isSingleUse, isUsed } =
       createShortLinkDto;
     const shortCodeSet = await this.findAllShortCodes();
-    if (!shortCode) {
+    if (!shortCode?.trim()) {
       shortCode = this.randomWordsService.generateRandomString(
         6,
         12,
