@@ -10,6 +10,7 @@ import {
   Query,
   Redirect,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { ShortLinksService } from './short-links.service';
 import { CreateShortLinkDto } from './dto/create-short-link.dto';
@@ -24,34 +25,39 @@ export class ShortLinksController {
   ) {}
 
   @Post()
-  create(@Body() createShortLinkDto: CreateShortLinkDto) {
-    console.log('Request Received:', createShortLinkDto);
+  create(@Body() createShortLinkDto: CreateShortLinkDto, @Req() req: any) {
+    const userId = req.userId || null;
+    createShortLinkDto.userId = userId;
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 
   // @Redirect()
   @Get('/shortlink/:shortCode')
-  async redirectToTarget(@Param('shortCode') shortCode: string) {
+  async redirectToTarget(
+    @Param('shortCode') shortCode: string,
+    @Res() res: any,
+  ) {
     const targetLink =
       await this.shortLinksService.findShortLinkbyShortCode(shortCode);
     if (targetLink) {
       // const now = new Date();
       if (targetLink.isSingleUse && targetLink.isUsed) {
-        return {
-          statusCode: HttpStatus.GONE,
-          message: 'This link has expired.',
-        }; // 410: Gone
-      }
-      // we must increase visitcount each time link is visited
-      await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
-        visitCount: targetLink.visitCount + 1,
-        isUsed: targetLink.isSingleUse && !targetLink.isUsed,
-      });
-      
-      return { statusCode: HttpStatus.FOUND, targetLink };
-    }
+        return res
+          .status(HttpStatus.GONE)
+          .json({ message: 'This link has expired.' });
+      } else {
+        // we must increase visitcount each time link is visited
+        await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
+          visitCount: targetLink.visitCount + 1,
+          isUsed: targetLink.isSingleUse && !targetLink.isUsed,
+        });
 
-    return { statusCode: HttpStatus.NOT_FOUND, message: 'Shortlink not found' };
+        return res.status(HttpStatus.FOUND).json(targetLink);
+      }
+    }
+    return res
+      .status(HttpStatus.NOT_FOUND)
+      .json({ message: 'Shortlink not found' });
   }
 
   @Get('/findbyuserid')

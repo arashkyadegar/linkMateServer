@@ -42,8 +42,11 @@ export class ShortLinksService {
       }
     }
 
+    // Convert userId to ObjectId if it exists
+    const objectUserId = userId ? new ObjectId(userId) : null;
+
     const shortLink = this.shortLinkRepository.create({
-      ...(userId && { userId }),
+      ...(objectUserId && { userId: objectUserId }),
       originalUrl,
       shortCode,
       visitCount,

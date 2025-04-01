@@ -14,8 +14,8 @@ export class ShortLinkEntity {
   @Column({ default: 0 })
   visitCount: number;
 
-  @ObjectIdColumn()
-  userId: ObjectId;
+  @Column({ nullable: true })
+  userId: ObjectId | null;
 
   @Column({ default: false })
   isSingleUse: boolean;
