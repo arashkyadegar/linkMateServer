@@ -7,6 +7,8 @@ import { MongoRepository } from 'typeorm';
 import { ObjectId } from 'mongodb';
 import { RandomWordsService } from 'src/random-words/random-words.service';
 import * as bcrypt from 'bcrypt';
+import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
+import { createPaginatedResult } from 'src/common/helpers/createPaginatedResult';
 
 @Injectable()
 export class PasswordLinksService {
@@ -22,7 +24,7 @@ export class PasswordLinksService {
       shortCode,
       passwordHash,
       isSingleUse = false, // Default value
-      isUsed = false,  
+      isUsed = false,
       userId,
       expirationDate,
     } = createPasswordLinkDto;
@@ -74,6 +76,39 @@ export class PasswordLinksService {
 
     // Extract shortCode values and save them in a Set
     return new Set(passwordLinks.map((link) => link.shortCode));
+  }
+
+  async findAllByUserId(
+    page: number,
+    pageSize: number,
+    userId: string,
+  ): Promise<PaginatedResult<any>> {
+    const skipNumber = (page - 1) * pageSize;
+  
+    // Unified filter for consistency
+    const filter = { userId: new ObjectId(userId) };
+  
+    // Create the aggregation pipeline
+    const pipeline = [
+      { $match: filter },
+      { $sort: { createdAt: -1 } },
+      { $skip: skipNumber },
+      { $limit: pageSize },
+    ];
+  
+    try {
+      // Run aggregation and count queries concurrently
+      const [result, totalCount] = await Promise.all([
+        this.passwordLinkRepository.aggregate(pipeline).toArray(),
+        this.passwordLinkRepository.countDocuments(filter), // Replaced `count` with `countDocuments`
+      ]);
+  
+      return createPaginatedResult(result, totalCount, page);
+    } catch (error) {
+      // Handle errors gracefully
+      console.error("Error fetching paginated data:", error);
+      throw new Error("Failed to fetch paginated data");
+    }
   }
   findAll() {
     return `This action returns all passwordLinks`;

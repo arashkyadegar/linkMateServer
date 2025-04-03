@@ -69,21 +69,30 @@ export class ShortLinksService {
   ): Promise<PaginatedResult<any>> {
     const skipNumber = (page - 1) * pageSize;
 
+    // Unified filter for consistency
+    const filter = { userId: new ObjectId(userId) };
+
+    // Create the aggregation pipeline
     const pipeline = [
-      { $match: { userId: new ObjectId(userId) } },
+      { $match: filter },
       { $sort: { createdAt: -1 } },
       { $skip: skipNumber },
       { $limit: pageSize },
     ];
 
-    const [result, totalCount] = await Promise.all([
-      this.shortLinkRepository.aggregate(pipeline).toArray(),
-      this.shortLinkRepository.count({
-        where: { userId: new ObjectId(userId) },
-      }),
-    ]);
+    try {
+      // Run aggregation and count queries concurrently
+      const [result, totalCount] = await Promise.all([
+        this.shortLinkRepository.aggregate(pipeline).toArray(),
+        this.shortLinkRepository.countDocuments(filter), // Replaced `count` with `countDocuments`
+      ]);
 
-    return createPaginatedResult(result, totalCount);
+      return createPaginatedResult(result, totalCount, page);
+    } catch (error) {
+      // Handle errors gracefully
+      console.error('Error fetching paginated data:', error);
+      throw new Error('Failed to fetch paginated data');
+    }
   }
 
   async findAllShortCodes(): Promise<Set<string>> {

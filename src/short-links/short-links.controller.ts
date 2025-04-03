@@ -29,7 +29,6 @@ export class ShortLinksController {
   create(@Body() createShortLinkDto: CreateShortLinkDto, @Req() req: any) {
     const userId = req.userId || null;
     createShortLinkDto.userId = userId;
-    console.log(createShortLinkDto);
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 

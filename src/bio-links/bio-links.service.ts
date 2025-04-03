@@ -84,7 +84,7 @@ export class BioLinksService {
       this.bioLinkRepository.count({ where: { userId: new ObjectId(userId) } }),
     ]);
 
-    return createPaginatedResult(result, totalCount);
+    return createPaginatedResult(result, totalCount, page);
   }
 
   async updateBioLink(
