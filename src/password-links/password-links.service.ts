@@ -1,4 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePasswordLinkDto } from './dto/create-password-link.dto';
 import { UpdatePasswordLinkDto } from './dto/update-password-link.dto';
 import { PasswordLinkEntity } from './entities/password-link.entity';
@@ -84,10 +89,10 @@ export class PasswordLinksService {
     userId: string,
   ): Promise<PaginatedResult<any>> {
     const skipNumber = (page - 1) * pageSize;
-  
+
     // Unified filter for consistency
     const filter = { userId: new ObjectId(userId) };
-  
+
     // Create the aggregation pipeline
     const pipeline = [
       { $match: filter },
@@ -95,23 +100,57 @@ export class PasswordLinksService {
       { $skip: skipNumber },
       { $limit: pageSize },
     ];
-  
+
     try {
       // Run aggregation and count queries concurrently
       const [result, totalCount] = await Promise.all([
         this.passwordLinkRepository.aggregate(pipeline).toArray(),
         this.passwordLinkRepository.countDocuments(filter), // Replaced `count` with `countDocuments`
       ]);
-  
+
       return createPaginatedResult(result, totalCount, page);
     } catch (error) {
       // Handle errors gracefully
-      console.error("Error fetching paginated data:", error);
-      throw new Error("Failed to fetch paginated data");
+      console.error('Error fetching paginated data:', error);
+      throw new Error('Failed to fetch paginated data');
     }
   }
   findAll() {
     return `This action returns all passwordLinks`;
+  }
+
+  async findPasswordLinkbyShortCode(
+    shortCode: string,
+  ): Promise<PasswordLinkEntity | null> {
+    const shortLink = await this.passwordLinkRepository.findOneBy({
+      shortCode: shortCode,
+    });
+
+    return shortLink;
+  }
+  async patchPasswordLink(
+    id: string,
+    updateFields: Partial<CreatePasswordLinkDto>,
+  ): Promise<PasswordLinkEntity> {
+    // Validate the ID
+    if (!ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID');
+    }
+
+    // Find the existing short link
+    const passwordLink = await this.passwordLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+    });
+
+    if (!passwordLink) {
+      throw new NotFoundException(`PasswordLink with ID ${id} not found`);
+    }
+
+    // Apply only the specified updates
+    Object.assign(passwordLink, updateFields, { updatedAt: new Date() });
+
+    // Save and return the updated short link
+    return await this.passwordLinkRepository.save(passwordLink);
   }
 
   findOne(id: number) {
