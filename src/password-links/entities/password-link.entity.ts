@@ -23,12 +23,11 @@ export class PasswordLinkEntity {
   @Column({ default: false })
   isSingleUse: boolean;
 
-  @Column({ default: false  })
+  @Column({ default: false })
   isUsed: boolean;
-  
 
   @Column({ nullable: true })
-  expirationDate: Date;
+  expirationDate: Date | null;
 
   @Column({ nullable: true })
   createdAt: Date;

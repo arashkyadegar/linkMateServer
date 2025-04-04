@@ -15,6 +15,7 @@ import { PasswordLinksService } from './password-links.service';
 import { CreatePasswordLinkDto } from './dto/create-password-link.dto';
 import { UpdatePasswordLinkDto } from './dto/update-password-link.dto';
 import { EnvConfigService } from 'src/env-config/env-config.service';
+import { UnlockPasswordLinkDto } from './dto/unlock-password-link.dto';
 
 @Controller('password-links')
 export class PasswordLinksController {
@@ -45,12 +46,10 @@ export class PasswordLinksController {
   }
 
   @Get('/unlock')
-  unlockPasswordLink(@Req() req: any, @Query() query: Record<string, any>) {
-    const { page = 1 } = query; // Set defaults if not provided
-    const userId = req.userId; //this is extracted from cookie in cookieMiddleware
-    const pageSize = this.envConfigService.getPageSize();
-    return this.passwordLinksService.findAllByUserId(page, pageSize, userId);
-  }
+  unlockPasswordLink(
+    @Body() unlockPasswordLinkDto: UnlockPasswordLinkDto,
+    @Req() req: any,
+  ) {}
 
   @Get(':id')
   findOne(@Param('id') id: string) {

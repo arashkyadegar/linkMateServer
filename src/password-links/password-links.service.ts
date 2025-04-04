@@ -50,6 +50,8 @@ export class PasswordLinksService {
       }
     }
 
+    expirationDate = expirationDate || null;
+
     // Convert userId to ObjectId if it exists
     const objectUserId = userId ? new ObjectId(userId) : null;
     const salt = await bcrypt.genSalt();

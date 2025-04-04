@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsString, Length } from 'class-validator';
+import { IsDate, IsOptional, IsString, Length } from 'class-validator';
 import { BaseLinkDto } from 'src/common/dtos/base-link.dto';
 
 export class CreatePasswordLinkDto extends BaseLinkDto {
@@ -7,7 +7,8 @@ export class CreatePasswordLinkDto extends BaseLinkDto {
   @Length(8)
   passwordHash: string;
 
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
-  expirationDate: Date;
+  expirationDate: Date | null;
 }
