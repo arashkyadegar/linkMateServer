@@ -78,7 +78,14 @@ export class PasswordLinksController {
     const targetLink =
       await this.passwordLinksService.findPasswordLinkbyShortCode(shortCode);
     if (targetLink) {
-      // const now = new Date();
+      const now = new Date();
+
+      // Check if the link has expired
+      if (targetLink.expirationDate && targetLink.expirationDate <= now) {
+        return res
+          .status(HttpStatus.GONE)
+          .json({ message: 'This link has expired.' });
+      }
       if (targetLink.isSingleUse && targetLink.isUsed) {
         return res
           .status(HttpStatus.GONE)
