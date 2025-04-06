@@ -8,10 +8,9 @@ import {
   Delete,
   Req,
   Query,
-  Redirect,
   HttpStatus,
   Res,
-  ConsoleLogger,
+  Put,
 } from '@nestjs/common';
 import { ShortLinksService } from './short-links.service';
 import { CreateShortLinkDto } from './dto/create-short-link.dto';
@@ -85,8 +84,20 @@ export class ShortLinksController {
     return this.shortLinksService.updateShortLink(id, updateShortLinkDto);
   }
 
+  @Put(':id')
+  updateOne(
+    @Param('id') id: string,
+    @Body() updateShortLinkDto: UpdateShortLinkDto,
+    @Req() req: any,
+  ) {
+    updateShortLinkDto.userId = req.userId;
+    console.log(id)
+    return this.shortLinksService.updateShortLink(id, updateShortLinkDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string, @Req() req: any) {
+    console.log('Controller req.userId:', req.userId);
     const userId = req.userId;
     return this.shortLinksService.deleteShortLink(id, userId);
   }

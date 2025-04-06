@@ -25,7 +25,6 @@ export class CookieMiddleware implements NestMiddleware {
     }
 
     req.userId = decodedToken.userResult._id;
-    console.log(this.jwtService.verify(sessionToken));
     next();
   }
 }

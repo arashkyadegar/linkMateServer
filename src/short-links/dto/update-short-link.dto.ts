@@ -3,7 +3,7 @@ import { CreateShortLinkDto } from './create-short-link.dto';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class UpdateShortLinkDto extends PartialType(CreateShortLinkDto) {
-  @IsString()
+  // @IsString()
   id: string;
 
   @IsOptional()

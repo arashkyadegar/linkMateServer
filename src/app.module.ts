@@ -73,6 +73,9 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CookieMiddleware).forRoutes(
       { path: 'bio-links', method: RequestMethod.ALL }, // Apply to all methods of routes under 'user'
+      { path: 'short-links/:id', method: RequestMethod.DELETE },
+      { path: 'short-links/:id', method: RequestMethod.GET },
+      { path: 'short-links/:id', method: RequestMethod.PUT },
       { path: 'short-links/findbyuserid', method: RequestMethod.GET },
       { path: 'password-links', method: RequestMethod.ALL },
       { path: 'password-links/findbyuserid', method: RequestMethod.GET },
