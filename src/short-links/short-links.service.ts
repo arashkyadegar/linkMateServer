@@ -124,8 +124,6 @@ export class ShortLinksService {
   async updateShortLink(id: string, updateShortLinkDto: UpdateShortLinkDto) {
     const { userId, originalUrl, shortCode, visitCount } = updateShortLinkDto;
 
-console.log(id)
-console.log(userId)
 
     if (!userId) {
       throw new BadRequestException('Invalid ID or UserID format.');

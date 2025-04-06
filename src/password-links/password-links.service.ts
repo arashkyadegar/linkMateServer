@@ -163,7 +163,16 @@ export class PasswordLinksService {
     return `This action updates a #${id} passwordLink`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} passwordLink`;
+  async deletePasswordLink(id: string, userId: string) {
+    const shortLink = await this.passwordLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId),
+    });
+
+    if (!shortLink) {
+      throw new NotFoundException(`shortLink with ID ${id} not found`);
+    }
+
+    await this.passwordLinkRepository.remove(shortLink);
   }
 }

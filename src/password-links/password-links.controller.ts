@@ -65,8 +65,9 @@ export class PasswordLinksController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.passwordLinksService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: any) {
+    const userId = req.userId;
+    return this.passwordLinksService.deletePasswordLink(id, userId);
   }
 
   // @Redirect()
