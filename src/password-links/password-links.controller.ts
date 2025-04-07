@@ -71,41 +71,96 @@ export class PasswordLinksController {
   }
 
   // @Redirect()
+  // @Get('/passwordlink/:shortCode')
+  // async redirectToTarget(
+  //   @Param('shortCode') shortCode: string,
+  //   @Res() res: any,
+  // ) {
+  //   const targetLink =
+  //     await this.passwordLinksService.findPasswordLinkbyShortCode(shortCode);
+  //   if (targetLink) {
+  //     const now = new Date();
+
+  //     // Check if the link has expired
+  //     if (targetLink.expirationDate && targetLink.expirationDate <= now) {
+  //       return res
+  //         .status(HttpStatus.GONE)
+  //         .json({ message: 'This link has expired.' });
+  //     }
+  //     if (targetLink.isSingleUse && targetLink.isUsed) {
+  //       return res
+  //         .status(HttpStatus.GONE)
+  //         .json({ message: 'This link has expired.' });
+  //     } else {
+  //       // we must increase visitcount each time link is visited
+  //       await this.passwordLinksService.patchPasswordLink(
+  //         targetLink._id.toString(),
+  //         {
+  //           visitCount: targetLink.visitCount + 1,
+  //           isUsed: targetLink.isSingleUse && !targetLink.isUsed,
+  //         },
+  //       );
+
+  //       return res.status(HttpStatus.FOUND).json(targetLink);
+  //     }
+  //   }
+  //   return res
+  //     .status(HttpStatus.NOT_FOUND)
+  //     .json({ message: 'Shortlink not found' });
+  // }
+
   @Get('/passwordlink/:shortCode')
   async redirectToTarget(
     @Param('shortCode') shortCode: string,
     @Res() res: any,
   ) {
-    const targetLink =
-      await this.passwordLinksService.findPasswordLinkbyShortCode(shortCode);
-    if (targetLink) {
+    try {
+      const targetLink =
+        await this.passwordLinksService.findPasswordLinkbyShortCode(shortCode);
+
+      if (!targetLink) {
+        // Serve the "not found" view
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .render('not-found', { shortCode });
+      }
+
       const now = new Date();
 
       // Check if the link has expired
       if (targetLink.expirationDate && targetLink.expirationDate <= now) {
-        return res
-          .status(HttpStatus.GONE)
-          .json({ message: 'This link has expired.' });
+        // Serve the "expired" view
+        return res.status(HttpStatus.GONE).render('expired', { shortCode });
       }
-      if (targetLink.isSingleUse && targetLink.isUsed) {
-        return res
-          .status(HttpStatus.GONE)
-          .json({ message: 'This link has expired.' });
-      } else {
-        // we must increase visitcount each time link is visited
-        await this.passwordLinksService.patchPasswordLink(
-          targetLink._id.toString(),
-          {
-            visitCount: targetLink.visitCount + 1,
-            isUsed: targetLink.isSingleUse && !targetLink.isUsed,
-          },
-        );
 
-        return res.status(HttpStatus.FOUND).json(targetLink);
+      if (targetLink.isSingleUse && targetLink.isUsed) {
+        // Serve the "expired" view for single-use links
+        return res.status(HttpStatus.GONE).render('expired', { shortCode });
       }
+
+      if (targetLink.passwordHash) {
+        // Serve the "password entry" view if the link is password protected
+        return res
+          .status(HttpStatus.OK)
+          .render('password', { shortCode, error: null });
+      }
+
+      // Update visit count and mark as used if single-use
+      await this.passwordLinksService.patchPasswordLink(
+        targetLink._id.toString(),
+        {
+          visitCount: targetLink.visitCount + 1,
+          isUsed: targetLink.isSingleUse ? true : targetLink.isUsed,
+        },
+      );
+
+      // Redirect to the original URL
+      return res.redirect(targetLink.originalUrl);
+    } catch (error) {
+      // Serve a generic error view
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .render('error', { message: 'Something went wrong.' });
     }
-    return res
-      .status(HttpStatus.NOT_FOUND)
-      .json({ message: 'Shortlink not found' });
   }
 }

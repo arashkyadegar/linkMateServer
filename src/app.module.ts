@@ -88,6 +88,9 @@ export class AppModule {
     // Apply optional OptionalAuthMiddleware
     consumer
       .apply(OptionalAuthMiddleware)
-      .forRoutes({ path: 'short-links', method: RequestMethod.POST });
+      .forRoutes({ path: 'short-links', method: RequestMethod.POST },
+        { path: 'short-links/shortlink/:shortCode', method: RequestMethod.GET }
+      );
+   
   }
 }

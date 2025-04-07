@@ -31,35 +31,75 @@ export class ShortLinksController {
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 
+  //front
   // @Redirect()
+  // @Get('/shortlink/:shortCode')
+  // async redirectToTarget(
+  //   @Param('shortCode') shortCode: string,
+  //   @Res() res: any,
+  // ) {
+  //   const targetLink =
+  //     await this.shortLinksService.findShortLinkbyShortCode(shortCode);
+  //   if (targetLink) {
+  //     // const now = new Date();
+  //     if (targetLink.isSingleUse && targetLink.isUsed) {
+  //       return res
+  //         .status(HttpStatus.GONE)
+  //         .json({ message: 'This link has expired.' });
+  //     } else {
+  //       // we must increase visitcount each time link is visited
+  //       await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
+  //         visitCount: targetLink.visitCount + 1,
+  //         isUsed: targetLink.isSingleUse && !targetLink.isUsed,
+  //       });
+
+  //       return res.status(HttpStatus.FOUND).json(targetLink);
+  //     }
+  //   }
+  //   return res
+  //     .status(HttpStatus.NOT_FOUND)
+  //     .json({ message: 'Shortlink not found' });
+  // }
+
+  //server
   @Get('/shortlink/:shortCode')
   async redirectToTarget(
     @Param('shortCode') shortCode: string,
     @Res() res: any,
   ) {
-    const targetLink =
-      await this.shortLinksService.findShortLinkbyShortCode(shortCode);
-    if (targetLink) {
-      // const now = new Date();
-      if (targetLink.isSingleUse && targetLink.isUsed) {
+    try {
+      const targetLink =
+        await this.shortLinksService.findShortLinkbyShortCode(shortCode);
+
+      if (!targetLink) {
+        // Render "not found" view
         return res
-          .status(HttpStatus.GONE)
-          .json({ message: 'This link has expired.' });
-      } else {
-        // we must increase visitcount each time link is visited
-        await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
-          visitCount: targetLink.visitCount + 1,
-          isUsed: targetLink.isSingleUse && !targetLink.isUsed,
-        });
-
-        return res.status(HttpStatus.FOUND).json(targetLink);
+          .status(HttpStatus.NOT_FOUND)
+          .render('not-found', { shortCode });
       }
-    }
-    return res
-      .status(HttpStatus.NOT_FOUND)
-      .json({ message: 'Shortlink not found' });
-  }
 
+      if (targetLink.isSingleUse && targetLink.isUsed) {
+        // Render "expired" view
+        return res.status(HttpStatus.GONE).render('expired', { shortCode });
+      }
+
+      // Update link stats
+      await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
+        visitCount: targetLink.visitCount + 1,
+        isUsed: targetLink.isSingleUse ? true : targetLink.isUsed,
+      });
+
+      // Redirect to the original URL
+      console.log(`Redirecting to: ${targetLink.originalUrl}`);
+
+      return res.redirect(targetLink.originalUrl);
+    } catch (error) {
+      // Render generic error view
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .render('error', { message: 'An unexpected error occurred.' });
+    }
+  }
   @Get('/findbyuserid')
   findAllByUserId(@Req() req: any, @Query() query: Record<string, any>) {
     const { page = 1 } = query; // Set defaults if not provided
@@ -91,7 +131,7 @@ export class ShortLinksController {
     @Req() req: any,
   ) {
     updateShortLinkDto.userId = req.userId;
-    console.log(id)
+    console.log(id);
     return this.shortLinksService.updateShortLink(id, updateShortLinkDto);
   }
 

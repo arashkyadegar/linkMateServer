@@ -5,6 +5,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as express from 'express';
+import * as path from 'path';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -17,7 +19,15 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe());
+  app.set('view engine', 'ejs');
+  app.use(express.static(path.join(__dirname, '../public')));
+  // app.set('views', path.join(__dirname, '../src/short-links/views'));
 
+  app.set('views', [
+    path.join(__dirname, '../src/short-links/views'),
+    path.join(__dirname, '../src/password-links/views'),
+  ]);
+  
   const config = new DocumentBuilder()
     .setTitle('cats sample')
     .setDescription('cats api description')
