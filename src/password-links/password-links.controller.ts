@@ -46,11 +46,13 @@ export class PasswordLinksController {
     return this.passwordLinksService.findAllByUserId(page, pageSize, userId);
   }
 
-  @Get('/unlock')
+  @Post('/unlock/:shortCode')
   unlockPasswordLink(
     @Body() unlockPasswordLinkDto: UnlockPasswordLinkDto,
     @Req() req: any,
-  ) {}
+  ) {
+    console.log(unlockPasswordLinkDto);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req: any) {
@@ -70,7 +72,6 @@ export class PasswordLinksController {
     @Req() req: any,
   ) {
     updatePasswordLinkDto.userId = req.userId;
-    console.log(id);
     return this.passwordLinksService.updatePasswordLink(
       id,
       updatePasswordLinkDto,

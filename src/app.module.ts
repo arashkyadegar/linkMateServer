@@ -77,7 +77,7 @@ export class AppModule {
       { path: 'short-links/:id', method: RequestMethod.GET },
       { path: 'short-links/:id', method: RequestMethod.PUT },
       { path: 'short-links/findbyuserid', method: RequestMethod.GET },
-
+      { path: 'password-links/unlock/:shortCode', method: RequestMethod.POST },
       { path: 'password-links', method: RequestMethod.ALL },
       { path: 'password-links/:id', method: RequestMethod.GET },
       { path: 'password-links/:id', method: RequestMethod.PUT },
