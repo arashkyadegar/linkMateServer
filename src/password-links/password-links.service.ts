@@ -23,6 +23,28 @@ export class PasswordLinksService {
     private readonly randomWordsService: RandomWordsService,
   ) {}
 
+
+
+  
+  async findOnePasswordLink(
+    id: string,
+    userId: string,
+  ): Promise<PasswordLinkEntity> {
+    if (!ObjectId.isValid(id) || !ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid ID or UserID format.');
+    }
+
+    const secureLink = await this.passwordLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId),
+    });
+
+    if (!secureLink) {
+      throw new NotFoundException(`BioLink with ID ${id} not found`);
+    }
+
+    return secureLink;
+  }
   async create(createPasswordLinkDto: CreatePasswordLinkDto) {
     let {
       originalUrl,
@@ -155,12 +177,55 @@ export class PasswordLinksService {
     return await this.passwordLinkRepository.save(passwordLink);
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} passwordLink`;
   }
 
-  update(id: number, updatePasswordLinkDto: UpdatePasswordLinkDto) {
-    return `This action updates a #${id} passwordLink`;
+  async updatePasswordLink(
+    id: string,
+    updatePasswordLinkDto: UpdatePasswordLinkDto,
+  ) {
+    let {
+      userId,
+      originalUrl,
+      shortCode,
+      visitCount,
+      passwordHash,
+      expirationDate,
+    } = updatePasswordLinkDto;
+
+    if (!userId) {
+      throw new BadRequestException('Invalid ID or UserID format.');
+    }
+
+    if (!ObjectId.isValid(id) || !ObjectId.isValid(userId)) {
+      throw new BadRequestException('Invalid ID or UserID format.');
+    }
+
+    const passwordLink = await this.passwordLinkRepository.findOneBy({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId),
+    });
+
+    if (!passwordLink) {
+      throw new NotFoundException(`shortLink with ID ${id} not found`);
+    }
+    expirationDate = expirationDate || null;
+    const salt = await bcrypt.genSalt();
+    const passwordHashed = await this.hashPassword(
+      passwordHash as string,
+      salt,
+    );
+
+    Object.assign(passwordLink, {
+      originalUrl,
+      passwordHash: passwordHashed,
+      shortCode,
+      expirationDate,
+      updatedAt: Date.now(),
+    });
+
+    return this.passwordLinkRepository.save(passwordLink);
   }
 
   async deletePasswordLink(id: string, userId: string) {

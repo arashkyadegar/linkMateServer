@@ -200,15 +200,5 @@ export class ShortLinksService {
     return shortLink;
   }
 
-  // async checkLinkExpire(shortLinkentity: ShortLinkEntity): Promise<boolean> {
-  //   const now = new Date();
-  //   // Check if the link has expired
-  //   if (
-  //     shortLinkentity.expirationDate &&
-  //     shortLinkentity.expirationDate < now
-  //   ) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+
 }

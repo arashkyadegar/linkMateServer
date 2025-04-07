@@ -10,6 +10,7 @@ import {
   Query,
   Res,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { PasswordLinksService } from './password-links.service';
 import { CreatePasswordLinkDto } from './dto/create-password-link.dto';
@@ -52,16 +53,9 @@ export class PasswordLinksController {
   ) {}
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.passwordLinksService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updatePasswordLinkDto: UpdatePasswordLinkDto,
-  ) {
-    return this.passwordLinksService.update(+id, updatePasswordLinkDto);
+  findOne(@Param('id') id: string, @Req() req: any) {
+    const userId = req.userId;
+    return this.passwordLinksService.findOnePasswordLink(id, userId);
   }
 
   @Delete(':id')
@@ -69,45 +63,19 @@ export class PasswordLinksController {
     const userId = req.userId;
     return this.passwordLinksService.deletePasswordLink(id, userId);
   }
-
-  // @Redirect()
-  // @Get('/passwordlink/:shortCode')
-  // async redirectToTarget(
-  //   @Param('shortCode') shortCode: string,
-  //   @Res() res: any,
-  // ) {
-  //   const targetLink =
-  //     await this.passwordLinksService.findPasswordLinkbyShortCode(shortCode);
-  //   if (targetLink) {
-  //     const now = new Date();
-
-  //     // Check if the link has expired
-  //     if (targetLink.expirationDate && targetLink.expirationDate <= now) {
-  //       return res
-  //         .status(HttpStatus.GONE)
-  //         .json({ message: 'This link has expired.' });
-  //     }
-  //     if (targetLink.isSingleUse && targetLink.isUsed) {
-  //       return res
-  //         .status(HttpStatus.GONE)
-  //         .json({ message: 'This link has expired.' });
-  //     } else {
-  //       // we must increase visitcount each time link is visited
-  //       await this.passwordLinksService.patchPasswordLink(
-  //         targetLink._id.toString(),
-  //         {
-  //           visitCount: targetLink.visitCount + 1,
-  //           isUsed: targetLink.isSingleUse && !targetLink.isUsed,
-  //         },
-  //       );
-
-  //       return res.status(HttpStatus.FOUND).json(targetLink);
-  //     }
-  //   }
-  //   return res
-  //     .status(HttpStatus.NOT_FOUND)
-  //     .json({ message: 'Shortlink not found' });
-  // }
+  @Put(':id')
+  updateOne(
+    @Param('id') id: string,
+    @Body() updatePasswordLinkDto: UpdatePasswordLinkDto,
+    @Req() req: any,
+  ) {
+    updatePasswordLinkDto.userId = req.userId;
+    console.log(id);
+    return this.passwordLinksService.updatePasswordLink(
+      id,
+      updatePasswordLinkDto,
+    );
+  }
 
   @Get('/passwordlink/:shortCode')
   async redirectToTarget(

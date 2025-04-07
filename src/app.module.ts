@@ -78,9 +78,9 @@ export class AppModule {
       { path: 'short-links/:id', method: RequestMethod.PUT },
       { path: 'short-links/findbyuserid', method: RequestMethod.GET },
 
-
       { path: 'password-links', method: RequestMethod.ALL },
       { path: 'password-links/:id', method: RequestMethod.GET },
+      { path: 'password-links/:id', method: RequestMethod.PUT },
       { path: 'password-links/:id', method: RequestMethod.DELETE },
       { path: 'password-links/findbyuserid', method: RequestMethod.GET },
     );
@@ -88,9 +88,9 @@ export class AppModule {
     // Apply optional OptionalAuthMiddleware
     consumer
       .apply(OptionalAuthMiddleware)
-      .forRoutes({ path: 'short-links', method: RequestMethod.POST },
-        { path: 'short-links/shortlink/:shortCode', method: RequestMethod.GET }
+      .forRoutes(
+        { path: 'short-links', method: RequestMethod.POST },
+        { path: 'short-links/shortlink/:shortCode', method: RequestMethod.GET },
       );
-   
   }
 }
