@@ -47,11 +47,15 @@ export class PasswordLinksController {
   }
 
   @Post('/unlock/:shortCode')
-  unlockPasswordLink(
+  async unlockPasswordLink(
     @Body() unlockPasswordLinkDto: UnlockPasswordLinkDto,
-    @Req() req: any,
+    @Res() res: any,
   ) {
-    console.log(unlockPasswordLinkDto);
+    const passwordLink = await this.passwordLinksService.UnlockPasswordLink(
+      unlockPasswordLinkDto.shortCode,
+      unlockPasswordLinkDto.password,
+    );
+    return res.redirect(passwordLink.originalUrl);
   }
 
   @Get(':id')

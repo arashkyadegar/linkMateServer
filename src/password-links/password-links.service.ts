@@ -23,9 +23,6 @@ export class PasswordLinksService {
     private readonly randomWordsService: RandomWordsService,
   ) {}
 
-
-
-  
   async findOnePasswordLink(
     id: string,
     userId: string,
@@ -146,11 +143,11 @@ export class PasswordLinksService {
   async findPasswordLinkbyShortCode(
     shortCode: string,
   ): Promise<PasswordLinkEntity | null> {
-    const shortLink = await this.passwordLinkRepository.findOneBy({
+    const passwordLink = await this.passwordLinkRepository.findOneBy({
       shortCode: shortCode,
     });
 
-    return shortLink;
+    return passwordLink;
   }
   async patchPasswordLink(
     id: string,
@@ -228,16 +225,31 @@ export class PasswordLinksService {
     return this.passwordLinkRepository.save(passwordLink);
   }
 
+  async UnlockPasswordLink(id: string, password: string) {
+    const passwordLink = await this.findPasswordLinkbyShortCode(id);
+
+    if (!passwordLink) {
+      throw new NotFoundException(`passwordLink with ID ${id} not found`);
+    }
+
+    const result = await bcrypt.compare(password, passwordLink.passwordHash);
+
+    if (!result) {
+      throw new BadRequestException(`provided password is not right`);
+    }
+
+    return passwordLink;
+  }
   async deletePasswordLink(id: string, userId: string) {
-    const shortLink = await this.passwordLinkRepository.findOneBy({
+    const passwordLink = await this.passwordLinkRepository.findOneBy({
       _id: new ObjectId(id),
       userId: new ObjectId(userId),
     });
 
-    if (!shortLink) {
-      throw new NotFoundException(`shortLink with ID ${id} not found`);
+    if (!passwordLink) {
+      throw new NotFoundException(`passwordLink with ID ${id} not found`);
     }
 
-    await this.passwordLinkRepository.remove(shortLink);
+    await this.passwordLinkRepository.remove(passwordLink);
   }
 }
