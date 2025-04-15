@@ -24,7 +24,7 @@ import { UnlockPasswordLinkDto } from './dto/unlock-password-link.dto';
 export class PasswordLinksController {
   constructor(
     private readonly passwordLinksService: PasswordLinksService,
-    private envConfigService: EnvConfigService,
+    private readonly  envConfigService: EnvConfigService,
   ) {}
 
   @Post('/password-links')
@@ -40,6 +40,7 @@ export class PasswordLinksController {
   findAll() {
     return this.passwordLinksService.findAll();
   }
+
   @Get('/password-links/findbyuserid')
   findAllByUserId(@Req() req: any, @Query() query: Record<string, any>) {
     const { page = 1 } = query; // Set defaults if not provided
@@ -75,6 +76,8 @@ export class PasswordLinksController {
       }
     }
   }
+
+  
   @Get('/password-links/:id')
   findOne(@Param('id') id: string, @Req() req: any) {
     const userId = req.userId;
