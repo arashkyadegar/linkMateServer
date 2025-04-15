@@ -14,13 +14,13 @@ import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CookieMiddleware } from './middlewares/cookieMiddleware';
 import { EnvConfigModule } from './env-config/env-config.module';
-import { OneTimeLinksModule } from './one-time-links/one-time-links.module';
 import { PasswordLinksModule } from './password-links/password-links.module';
 import { ShortLinksModule } from './short-links/short-links.module';
 import { ShortLinkEntity } from './short-links/entities/short-link.entity';
 import { RandomWordsModule } from './random-words/random-words.module';
 import { OptionalAuthMiddleware } from './middlewares/optionalCookieMiddleware';
 import { PasswordLinkEntity } from './password-links/entities/password-link.entity';
+import { TimeLinksModule } from './time-links/time-links.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -61,10 +61,10 @@ import { PasswordLinkEntity } from './password-links/entities/password-link.enti
     UsersModule,
     AuthModule,
     EnvConfigModule,
-    OneTimeLinksModule,
     PasswordLinksModule,
     ShortLinksModule,
     RandomWordsModule,
+    TimeLinksModule,
   ],
   controllers: [],
   providers: [],

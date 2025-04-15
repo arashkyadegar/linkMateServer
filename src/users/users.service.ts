@@ -33,7 +33,6 @@ export class UsersService {
     user = this.userRepository.create(user);
 
     const x = this.userRepository.save(user);
-    console.log(x);
     return x;
   }
 
@@ -69,7 +68,7 @@ export class UsersService {
 
       userResponse.email = user.email;
       userResponse._id = user._id;
-      
+
       return userResponse;
     } else {
       return null;

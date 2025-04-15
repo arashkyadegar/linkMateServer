@@ -1,11 +1,11 @@
-import { Controller, Post, Body, Put, Res } from '@nestjs/common';
+import { Controller, Post, Body, Put, Res, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
-import { UserEntity } from 'src/users/user.entity';
 import { SigninDto } from './dto/signin.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { SigninUser, SignupUser } from './custom-decorator/swagger-decorator';
 import { Response } from 'express';
+import { EmailAlreadyExistsException } from 'src/users/custom-exception/EmailAlreadyExistsException';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -14,8 +14,19 @@ export class AuthController {
 
   @SignupUser()
   @Post('signup')
-  async signup(@Body() signupDto: SignupDto): Promise<UserEntity | null> {
-    return this.authService.signUp(signupDto);
+  async signup(@Body() signupDto: SignupDto, @Res() res: any): Promise<void> {
+    try {
+      const response = await this.authService.signUp(signupDto);
+      response?._id;
+      response?.email;
+      return res
+        .status(HttpStatus.CREATED)
+        .send({ _id: response?._id, email: response?.email });
+    } catch (exception: any) {
+      if (exception instanceof EmailAlreadyExistsException) {
+        return res.status(HttpStatus.CONFLICT).send(signupDto);
+      }
+    }
   }
 
   @SigninUser()

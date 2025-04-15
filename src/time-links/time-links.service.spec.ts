@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OneTimeLinksService } from './one-time-links.service';
+import { TimeLinksService } from './time-links.service';
 
-describe('OneTimeLinksService', () => {
-  let service: OneTimeLinksService;
+describe('TimeLinksService', () => {
+  let service: TimeLinksService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OneTimeLinksService],
+      providers: [TimeLinksService],
     }).compile();
 
-    service = module.get<OneTimeLinksService>(OneTimeLinksService);
+    service = module.get<TimeLinksService>(TimeLinksService);
   });
 
   it('should be defined', () => {

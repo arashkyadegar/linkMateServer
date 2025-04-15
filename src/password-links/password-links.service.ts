@@ -235,7 +235,7 @@ export class PasswordLinksService {
     const result = await bcrypt.compare(password, passwordLink.passwordHash);
 
     if (!result) {
-      throw new BadRequestException(`provided password is not right`);
+      throw new BadRequestException(`The password you entered is incorrect. Please try again.`);
     }
 
     return passwordLink;

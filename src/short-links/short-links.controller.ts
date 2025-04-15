@@ -17,14 +17,15 @@ import { CreateShortLinkDto } from './dto/create-short-link.dto';
 import { UpdateShortLinkDto } from './dto/update-short-link.dto';
 import { EnvConfigService } from 'src/env-config/env-config.service';
 
-@Controller('short-links')
+// @Controller('short-links')
+@Controller()
 export class ShortLinksController {
   constructor(
     private readonly shortLinksService: ShortLinksService,
     private envConfigService: EnvConfigService,
   ) {}
 
-  @Post()
+  @Post('/short-links')
   create(@Body() createShortLinkDto: CreateShortLinkDto, @Req() req: any) {
     const userId = req.userId || null;
     createShortLinkDto.userId = userId;
@@ -62,7 +63,7 @@ export class ShortLinksController {
   // }
 
   //server
-  @Get('/shortlink/:shortCode')
+  @Get('/lnk/:shortCode')
   async redirectToTarget(
     @Param('shortCode') shortCode: string,
     @Res() res: any,
@@ -100,7 +101,7 @@ export class ShortLinksController {
         .render('error', { message: 'An unexpected error occurred.' });
     }
   }
-  @Get('/findbyuserid')
+  @Get('/short-links/findbyuserid')
   findAllByUserId(@Req() req: any, @Query() query: Record<string, any>) {
     const { page = 1 } = query; // Set defaults if not provided
     const userId = req.userId; //this is extracted from cookie in cookieMiddleware
@@ -108,13 +109,13 @@ export class ShortLinksController {
     return this.shortLinksService.findAllByUserId(page, pageSize, userId);
   }
 
-  @Get(':id')
+  @Get('/short-links/:id')
   findOne(@Param('id') id: string, @Req() req: any) {
     const userId = req.userId;
     return this.shortLinksService.findOneShortLink(id, userId);
   }
 
-  @Patch(':id')
+  @Patch('/short-links/:id')
   update(
     @Param('id') id: string,
     @Body() updateShortLinkDto: UpdateShortLinkDto,
@@ -124,7 +125,7 @@ export class ShortLinksController {
     return this.shortLinksService.updateShortLink(id, updateShortLinkDto);
   }
 
-  @Put(':id')
+  @Put('/short-links/:id')
   updateOne(
     @Param('id') id: string,
     @Body() updateShortLinkDto: UpdateShortLinkDto,
@@ -135,7 +136,7 @@ export class ShortLinksController {
     return this.shortLinksService.updateShortLink(id, updateShortLinkDto);
   }
 
-  @Delete(':id')
+  @Delete('/short-links/:id')
   remove(@Param('id') id: string, @Req() req: any) {
     console.log('Controller req.userId:', req.userId);
     const userId = req.userId;
