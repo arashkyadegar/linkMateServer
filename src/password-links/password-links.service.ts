@@ -37,7 +37,7 @@ export class PasswordLinksService {
     });
 
     if (!secureLink) {
-      throw new NotFoundException(`BioLink with ID ${id} not found`);
+      throw new NotFoundException(`SecureLink with ID ${id} not found`);
     }
 
     return secureLink;
@@ -240,6 +240,8 @@ export class PasswordLinksService {
 
     return passwordLink;
   }
+
+  
   async deletePasswordLink(id: string, userId: string) {
     const passwordLink = await this.passwordLinkRepository.findOneBy({
       _id: new ObjectId(id),

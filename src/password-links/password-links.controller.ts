@@ -47,6 +47,8 @@ export class PasswordLinksController {
     const pageSize = this.envConfigService.getPageSize();
     return this.passwordLinksService.findAllByUserId(page, pageSize, userId);
   }
+
+  
   @Post('/password-links/unlock/:shortCode')
   async unlockPasswordLink(
     @Body() unlockPasswordLinkDto: UnlockPasswordLinkDto,
