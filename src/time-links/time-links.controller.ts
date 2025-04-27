@@ -71,9 +71,9 @@ export class TimeLinksController {
       }
 
       const now = new Date();
-
+      const expirationDate = new Date(targetLink.expirationDate)
       // Check if the link has expired
-      if (targetLink.expirationDate && targetLink.expirationDate <= now) {
+      if (expirationDate <= now) {
         // Serve the "expired" view
         return res.status(HttpStatus.GONE).render('expired', { shortCode });
       }

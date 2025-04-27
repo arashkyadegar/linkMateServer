@@ -14,7 +14,7 @@ import { ObjectId } from 'mongodb';
 
 export class BaseLinkDto {
   @IsOptional() // Allows the field to be undefined or null
-  @Matches(/^$|^[a-zA-Z0-9]{6,12}$/, {
+  @Matches(/^$|^[a-zA-Z0-9]{1,12}$/, {
     message:
       'shortCode can be empty or must be 6-12 characters long containing only letters and numbers.',
   })

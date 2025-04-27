@@ -1,14 +1,5 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { DepartmentsModule } from './departments/departments.module';
-import { BioLinksModule } from './bio-links/bio-links.module';
-import { MapsModule } from './maps/maps.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BioLinkEntity } from './bio-links/biolink.entity';
-import { MapEntity } from './maps/map.entity';
-import { LinksModule } from './links/links.module';
-import { SuperLinksModule } from './super-links/super-links.module';
-import { ImagesModule } from './images/images.module';
-import { UploadsModule } from './uploads/uploads.module';
 import { UsersModule } from './users/users.module';
 import { UserEntity } from './users/user.entity';
 import { AuthModule } from './auth/auth.module';
@@ -22,6 +13,7 @@ import { OptionalAuthMiddleware } from './middlewares/optionalCookieMiddleware';
 import { PasswordLinkEntity } from './password-links/entities/password-link.entity';
 import { TimeLinksModule } from './time-links/time-links.module';
 import { TimeLinkEntity } from './time-links/entities/time-link.entity';
+import { HomeController } from './home/home.controller';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -31,8 +23,6 @@ import { TimeLinkEntity } from './time-links/entities/time-link.entity';
       database: 'dmpanel',
       // useUnifiedTopology: true,
       entities: [
-        BioLinkEntity,
-        MapEntity,
         UserEntity,
         ShortLinkEntity,
         PasswordLinkEntity,
@@ -42,24 +32,18 @@ import { TimeLinkEntity } from './time-links/entities/time-link.entity';
     }),
 
     // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'arashk',
-    //   database: 'dmpanel',
-    //   entities: [BioLinkEntity, MapEntity, UserEntity],
-    //   synchronize: true,
+    //   type: 'mongodb',
+    //   url: process.env.MONGOOSE_URII,
+    //   useUnifiedTopology: true,
+    //   entities: [
+    //     UserEntity,
+    //     ShortLinkEntity,
+    //     PasswordLinkEntity,
+    //     TimeLinkEntity,
+    //   ],
+    //   // synchronize: true, // Only for development; avoid in production!
     // }),
 
-    ImagesModule,
-    SuperLinksModule,
-    LinksModule,
-    DepartmentsModule,
-    MapsModule,
-    BioLinksModule,
-    ImagesModule,
-    UploadsModule,
     UsersModule,
     AuthModule,
     EnvConfigModule,
@@ -68,7 +52,7 @@ import { TimeLinkEntity } from './time-links/entities/time-link.entity';
     RandomWordsModule,
     TimeLinksModule,
   ],
-  controllers: [],
+  controllers: [HomeController],
   providers: [],
 })
 export class AppModule {
