@@ -13,12 +13,11 @@ import { EnvConfigService } from 'src/env-config/env-config.service';
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.registerAsync({
-      inject: [EnvConfigService], // Inject the global service
-      useFactory: (configService: EnvConfigService) => ({
-        secret: configService.getJwtSecret(),
-        signOptions: { expiresIn: '1h' },
-      }),
+    JwtModule.register({
+      secret: 'ABCD',
+      signOptions: {
+        expiresIn: '1h',
+      },
     }),
   ],
   controllers: [AuthController],

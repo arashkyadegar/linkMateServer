@@ -14,6 +14,9 @@ import { PasswordLinkEntity } from './password-links/entities/password-link.enti
 import { TimeLinksModule } from './time-links/time-links.module';
 import { TimeLinkEntity } from './time-links/entities/time-link.entity';
 import { HomeController } from './home/home.controller';
+import { VisitLogsModule } from './visit-logs/visit-logs.module';
+import { VisitLogEntity } from './visit-logs/entities/visit-log.entity';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -26,7 +29,8 @@ import { HomeController } from './home/home.controller';
         UserEntity,
         ShortLinkEntity,
         PasswordLinkEntity,
-        TimeLinkEntity
+        TimeLinkEntity,
+        VisitLogEntity
       ],
       // synchronize: true,
     }),
@@ -51,6 +55,7 @@ import { HomeController } from './home/home.controller';
     ShortLinksModule,
     RandomWordsModule,
     TimeLinksModule,
+    VisitLogsModule,
   ],
   controllers: [HomeController],
   providers: [],
