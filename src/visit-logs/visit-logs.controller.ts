@@ -1,13 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
 import { VisitLogsService } from './visit-logs.service';
-import { CreateVisitLogDto } from './dto/create-visit-log.dto';
 import { UpdateVisitLogDto } from './dto/update-visit-log.dto';
-import { GeoLocationService } from './get-location.service';
 
 @Controller('visit-logs')
 export class VisitLogsController {
-  constructor(private readonly visitLogsService: VisitLogsService,
-    private readonly getLocationService: GeoLocationService
+  constructor(private readonly visitLogsService: VisitLogsService
   ) { }
 
   @Post()
@@ -15,14 +12,11 @@ export class VisitLogsController {
     return
   }
 
-  @Get()
-  findAll() {
-    return this.visitLogsService.findAll();
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.visitLogsService.findOne(+id);
+  async findAllByLinkId(@Param('id') id: string, @Req() req: any, @Query() query: Record<string, any>) {
+    console.log('hello')
+    const userId = req.userId; //this is extracted from cookie in cookieMiddleware
+    return await this.visitLogsService.findAllByLinkId(id)
   }
 
   @Patch(':id')

@@ -81,6 +81,9 @@ export class AppModule {
       { path: 'time-links/:id', method: RequestMethod.PUT },
       { path: 'time-links/:id', method: RequestMethod.DELETE },
       { path: 'time-links/findbyuserid', method: RequestMethod.GET },
+
+
+      { path: 'visit-logs', method: RequestMethod.GET },
     );
 
     // Apply optional OptionalAuthMiddleware

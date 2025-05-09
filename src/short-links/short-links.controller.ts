@@ -35,36 +35,6 @@ export class ShortLinksController {
     return this.shortLinksService.createShortLink(createShortLinkDto);
   }
 
-  //front
-  // @Redirect()
-  // @Get('/shortlink/:shortCode')
-  // async redirectToTarget(
-  //   @Param('shortCode') shortCode: string,
-  //   @Res() res: any,
-  // ) {
-  //   const targetLink =
-  //     await this.shortLinksService.findShortLinkbyShortCode(shortCode);
-  //   if (targetLink) {
-  //     // const now = new Date();
-  //     if (targetLink.isSingleUse && targetLink.isUsed) {
-  //       return res
-  //         .status(HttpStatus.GONE)
-  //         .json({ message: 'This link has expired.' });
-  //     } else {
-  //       // we must increase visitcount each time link is visited
-  //       await this.shortLinksService.patchShortLink(targetLink._id.toString(), {
-  //         visitCount: targetLink.visitCount + 1,
-  //         isUsed: targetLink.isSingleUse && !targetLink.isUsed,
-  //       });
-
-  //       return res.status(HttpStatus.FOUND).json(targetLink);
-  //     }
-  //   }
-  //   return res
-  //     .status(HttpStatus.NOT_FOUND)
-  //     .json({ message: 'Shortlink not found' });
-  // }
-
   //server
   @Get('/lnk/:shortCode')
   async redirectToTarget(
@@ -88,7 +58,7 @@ export class ShortLinksController {
         return res.status(HttpStatus.GONE).render('expired', { shortCode });
       }
 
-      const ip = '5.126.144.211';
+      const ip = '5.126.144.211'; //must change to req.ip in production
 
       await this.visitLogsService.create(targetLink._id,ip);
 
@@ -110,6 +80,8 @@ export class ShortLinksController {
         .render('error', { message: 'An unexpected error occurred.' });
     }
   }
+
+  
   @Get('/short-links/findbyuserid')
   findAllByUserId(@Req() req: any, @Query() query: Record<string, any>) {
     const { page = 1 } = query; // Set defaults if not provided

@@ -6,6 +6,7 @@ import { VisitLogEntity } from './entities/visit-log.entity';
 import { MongoRepository } from 'typeorm';
 import { GeoLocationService } from './get-location.service';
 import { ObjectId } from 'mongodb';
+import { PaginatedResult } from 'src/common/interfaces/paginated-result.interface';
 
 @Injectable()
 export class VisitLogsService {
@@ -47,8 +48,13 @@ export class VisitLogsService {
   }
 
 
-  findAll() {
-    return `This action returns all visitLogs`;
+  async findAllByLinkId(
+    linkId: string): Promise<any> {
+    const visitLogs = this.visitLogRepository.aggregate([
+      { $match: { linkId: new ObjectId(linkId) } },
+      { $sort: { createdAt: -1 } } // Sort by latest visits first
+    ]).toArray();
+    return visitLogs;
   }
 
   findOne(id: number) {
